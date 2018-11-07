@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.settlement.dao.mapper.TFinaDistributorSettMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.settlement.dao.model.TFinaDistributorSett">
+  
+    <id column="sett_no" jdbcType="VARCHAR" property="settNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="distributor_name" jdbcType="VARCHAR" property="distributorName" />
+    <result column="distributor_person" jdbcType="VARCHAR" property="distributorPerson" />
+    <result column="person_phone" jdbcType="VARCHAR" property="personPhone" />
+    <result column="sett_total_amt" jdbcType="DECIMAL" property="settTotalAmt" />
+    <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+    <result column="sett_date" jdbcType="DATE" property="settDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    sett_no, distributor_no, distributor_name, distributor_person, person_phone, sett_total_amt,
+    staff_no, sett_date
+  </sql>
+
+  <select id="getAll" resultType="java.util.Map">
+    select
+      a.sett_date,
+      a.distributor_person,
+      a.person_phone,
+      a.sett_total_amt,
+      count(b.order_no) as total_count
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order d
+    on
+      d.order_no = b.order_no
+    where
+      a.distributor_no = #{distributor_no}
+    and
+      d.trans_status = #{transStatus}
+    group by
+      b.sett_no
+    order by
+      a.sett_date desc
+  </select>
+  <select id="searchAll" resultType="java.util.Map">
+    select
+      a.sett_no,
+      a.sett_date,
+      a.distributor_person,
+      a.person_phone,
+      a.sett_total_amt,
+      count(b.order_no) as total_count
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order d
+    on
+      d.order_no = b.order_no
+    <where>
+      a.distributor_no = #{distributor_no}
+      and d.trans_status = #{transStatus}
+      <if test="start_date != null">
+        and a.sett_date >= #{start_date}
+      </if>
+      <if test="end_date != null">
+        and #{end_date} >= a.sett_date
+      </if>
+      <if test="sett_no != null">
+        and a.sett_no = #{sett_no}
+      </if>
+    </where>
+    group by
+      b.sett_no
+    order by
+      a.sett_date desc
+  </select>
+
+  <select id="getAllDetail" resultType="java.util.Map">
+    select
+      b.order_no,
+      c.total_amt,
+      a.distributor_person,
+      a.person_phone,
+      c.contact_addre,
+      d.trans_date,
+      c.trans_status
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order c
+    on
+      c.order_no = b.order_no
+    left join
+      t_bus_order_detail d
+    on
+      d.order_no = c.order_no
+    where
+      a.distributor_no = #{distributor_no}
+    and
+      c.trans_status = #{transStatus}
+    order  by
+      a.sett_date desc
+  </select>
+
+  <select id="searchDetail" resultType="java.util.Map">
+      select
+      b.order_no,
+      c.total_amt,
+      c.contact_name as distributor_person,
+      c.contact_phone as person_phone,
+      c.contact_addre,
+      d.trans_date,
+      c.trans_status
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order c
+    on
+      c.order_no = b.order_no
+    left join
+      t_bus_order_detail d
+    on
+      d.order_no = c.order_no
+    left join
+      t_pub_mer_info e
+    on
+      e.mer_no = c.buy_person
+    <where>
+        c.trans_status = #{transStatus}
+      and c.order_no in <foreach collection="orderNos" item="item" open="(" close=")" separator="," index="index">#{item}</foreach>
+    </where>
+    order  by
+      a.sett_date desc
+
+  </select>
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hansy.tyly.admin.system.mapper.SysRoleMapper">
+    <select id="queryRoles" resultType="com.hansy.tyly.admin.dao.model.SysRole">
+        select DISTINCT * from sys_role
+         where 1=1
+            <if test="roleName != null and roleName != ''">
+                AND role_name LIKE concat(concat('%',#{roleName}),'%')
+            </if>
+            <if test="status != null and status != ''">
+                AND STATUS LIKE concat(concat('%',#{status}),'%')
+            </if>
+        order by INSERT_TIME desc
+    </select>
+    <select id="queryRoleHasMenuId" resultType="java.lang.String">
+        select DISTINCT MENU_ID from sys_r_role_menu where ROLE_ID=#{roleId} and `STATUS`=#{status}
+    </select>
+</mapper>

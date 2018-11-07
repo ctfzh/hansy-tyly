@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="cusyomer">
+    <output-path>$PROJECT_DIR$/hansy-tyly-customer</output-path>
+    <root id="archive" name="cusyomer.war">
+      <element id="dir-copy" path="$PROJECT_DIR$/hansy-tyly-customer" />
+    </root>
+  </artifact>
+</component>

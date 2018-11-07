@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.sale.dao.mapper.VisitRecordMapper">
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.sale.dao.model.VisitRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="visit_no" jdbcType="VARCHAR" property="visitNo"/>
+        <result column="staff_no" jdbcType="VARCHAR" property="staffNo"/>
+        <result column="cust_type" jdbcType="VARCHAR" property="custType"/>
+        <result column="cust_no" jdbcType="VARCHAR" property="custNo"/>
+        <result column="visit_addre" jdbcType="VARCHAR" property="visitAddre"/>
+        <result column="visit_content" jdbcType="VARCHAR" property="visitContent"/>
+        <result column="buy_type" jdbcType="TIMESTAMP" property="buyType"/>
+        <result column="cust_name" jdbcType="VARCHAR" property="custName"/>
+        <result column="latitude" jdbcType="VARCHAR" property="latitude"/>
+        <result column="longitude" jdbcType="VARCHAR" property="longitude"/>
+        <collection property="visitFiles" ofType="com.hansy.tyly.admin.sale.dao.model.VisitFiles">
+            <id column="file_no" jdbcType="VARCHAR" property="fileNo" />
+            <result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+            <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+            <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+            <result column="file_status" jdbcType="VARCHAR" property="fileStatus" />
+            <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+            <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        </collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        visit_no, staff_no, cust_type, cust_no, visit_addre, visit_content, buy_type
+    </sql>
+    <select id="listByStaffNo" resultType="com.hansy.tyly.admin.sale.dao.model.VisitRecord">
+        SELECT r.*
+        FROM t_pub_visit_record r
+        WHERE (r.staff_no = #{staffNo})
+        <if test="startTime != null">
+            AND (r.buy_type >= #{startTime})
+        </if>
+        <if test="endTime != null">
+             <![CDATA[
+               AND (r.buy_type <= #{endTime})
+             ]]>
+        </if>
+    </select>
+    <select id="selectById" resultMap="com.hansy.tyly.admin.sale.dao.mapper.VisitRecordMapper.BaseResultMap">
+        SELECT r.*, f.*
+        FROM t_pub_visit_record r
+        LEFT JOIN t_pub_visit_files f ON r.visit_no = f.visit_no
+        WHERE (r.visit_no = #{visitNo})
+    </select>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.log.mapper.TScCustBillMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TScCustBill">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="BILL_ID" jdbcType="VARCHAR" property="billId" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="SCHEDULE_STATUS" jdbcType="VARCHAR" property="scheduleStatus" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    BILL_ID, CUST_ID, PROD_ID, SCHEDULE_STATUS, INSERT_TIME, INSERT_USER_ID
+  </sql>
+</mapper>

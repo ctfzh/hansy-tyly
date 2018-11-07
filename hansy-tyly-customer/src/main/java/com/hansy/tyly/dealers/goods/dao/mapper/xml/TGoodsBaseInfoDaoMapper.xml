@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoDaoMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.goods.dao.model.GoodsBaseInfos">
+        <association property="tGoodsBaseInfo" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <association property="goodsDistributor" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper.BaseResultMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+    <resultMap id="BaseReturnMap" type="com.hansy.tyly.dealers.goods.dao.model.GoodsRetunBaseInfo">
+        <result column="dgoods_amt" property="xyAmt"  />
+        <result column="dtable_key" property="xyKey"  />
+        <association property="tGoodsBaseInfo" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <association property="goodsDistributor" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper.BaseResultMap"/>
+        <association property="goodsFilesList" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+
+    <resultMap id="BasePlatFromMap" type="com.hansy.tyly.dealers.goods.dao.model.GoodsBaseInfos">
+        <association property="tGoodsBaseInfo" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.BaseMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="findGoodsListByParams"  resultMap="BaseReturnMap">
+        SELECT
+        <if test="merNo!=null">
+            disMer.goods_amt as dgoods_amt,
+            disMer.table_key as dtable_key,
+        </if>
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        inner join t_goods_distributor dis on base.goods_no=dis.goods_no
+        <if test="merNo!=null">
+            left join t_goods_distributor_mer disMer on dis.distributor_no=disMer.distributor_no and dis.goods_no=disMer.goods_no
+            and disMer.on_status ='10022011'
+        </if>
+
+        left join t_goods_files file on base.goods_no=file.goods_no
+
+            and base.mian_pic_file_no=file.file_no
+
+
+        where base.goods_ascription  = #{goodsAscription}
+            <if test="goodsNo!=null" >
+              and base.goods_no=#{goodsNo}
+            </if>
+
+            <if test="distributorNo!=null" >
+                and dis.distributor_no  = #{distributorNo}
+            </if>
+            <if test="onStatus!=null" >
+                and dis.on_status  = #{onStatus}
+            </if>
+            <if test="goodsStatus!=null" >
+                and base.goods_status  = #{goodsStatus}
+            </if>
+            <if test="typeNo!=null" >
+                and base.type_no  = #{typeNo}
+            </if>
+            <if test="goodsName!=null" >
+                and base.goods_name  like CONCAT('%',#{goodsName},'%')
+            </if>
+        <if test="goodsNo!=null" >
+            and base.goods_no  like CONCAT('%',#{goodsNo},'%')
+        </if>
+            <if test="merNo!=null">
+                and disMer.mer_no =#{merNo}
+            </if>
+            <if test="notMerNo!=null">
+               <!-- and  <![CDATA[ disMer.mer_no <> #{notMerNo} ]]>-->
+               and base.goods_no not in (
+                  select disMer.goods_no
+                  from t_goods_distributor_mer disMer
+                  where disMer.mer_no =#{notMerNo}
+                  and disMer.on_status= '10022011'
+                )
+            </if>
+
+    </select>
+
+    <select id="findGoodsByGoodsNo"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper.Base_Column_List"/>
+
+        from t_goods_base_info base
+        inner join t_goods_distributor dis on base.goods_no=dis.goods_no
+
+        <where>
+            <if test="goodsNo!=null" >
+                and base.goods_no=#{goodsNo}
+            </if>
+            <if test="goodsAscription!=null" >
+                and base.goods_ascription  = #{goodsAscription}
+            </if>
+
+        </where>
+
+    </select>
+
+
+
+    <select id="getPlatformGoodsList"  resultMap="BasePlatFromMap">
+        SELECT
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        base.on_status as on_status,
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        left join t_goods_files file on base.goods_no=file.goods_no
+             and base.mian_pic_file_no=file.file_no
+        <where>
+            <if test="goodsNo!=null" >
+                and base.goods_no=#{goodsNo}
+            </if>
+            <if test="goodsAscription!=null" >
+                and base.goods_ascription  = #{goodsAscription}
+            </if>
+            <if test="goodsStatus!=null" >
+                and base.goods_status  = #{goodsStatus}
+            </if>
+            <if test="onStatus!=null" >
+                and base.on_status  = #{onStatus}
+            </if>
+            <if test="typeNo!=null" >
+                and base.type_no  = #{typeNo}
+            </if>
+            <if test="goodsName!=null" >
+                and base.goods_name  like CONCAT('%',#{goodsName},'%')
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getPlatformGoodsInfo"  resultMap="BasePlatFromMap">
+        SELECT
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        base.on_status as on_status
+        from t_goods_base_info base
+        <where>
+            <if test="goodsNo!=null" >
+                and base.goods_no=#{goodsNo}
+            </if>
+            <if test="goodsAscription!=null" >
+                and base.goods_ascription  = #{goodsAscription}
+            </if>
+            <if test="goodsStatus!=null" >
+                and base.goods_status  = #{goodsStatus}
+            </if>
+            <if test="onStatus!=null" >
+                and base.on_status  = #{onStatus}
+            </if>
+        </where>
+
+    </select>
+
+
+    <select id="selectGoodsStocksByDisNo"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        inner join t_goods_distributor dis on base.goods_no=dis.goods_no
+        where base.goods_ascription  = #{goodsAscription}
+        and dis.distributor_no=#{disNo}
+        and dis.goods_stock &lt;= dis.goods_stock_threshold
+    </select>
+
+
+
+
+</mapper>

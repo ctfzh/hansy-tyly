@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper">
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dealers.dao.model.DistributorInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="distributor_no" jdbcType="VARCHAR" property="distributorNo"/>
+        <result column="distributor_name" jdbcType="VARCHAR" property="distributorName"/>
+        <result column="legal_name" jdbcType="VARCHAR" property="legalName"/>
+        <result column="distributor_reg_no" jdbcType="VARCHAR" property="distributorRegNo"/>
+        <result column="company_type" jdbcType="VARCHAR" property="companyType"/>
+        <result column="distributor_addre" jdbcType="VARCHAR" property="distributorAddre"/>
+        <result column="distributor_contact" jdbcType="VARCHAR" property="distributorContact"/>
+        <result column="distributor_contact_phone" jdbcType="VARCHAR" property="distributorContactPhone"/>
+        <result column="distributor_status" jdbcType="VARCHAR" property="distributorStatus"/>
+        <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="staff_no" jdbcType="VARCHAR" property="staffNo"/>
+        <result column="d_user_name" jdbcType="VARCHAR" property="userName"/>
+        <association property="staff" column="staff_no" javaType="com.hansy.tyly.admin.dao.model.SysUser"
+                     resultMap="com.hansy.tyly.admin.dao.mapper.SysUserMapper.BaseResultMap"/>
+        <!--<collection property="files" ofType="com.hansy.tyly.admin.sale.dao.model.VisitFiles"-->
+                    <!--resultMap="com.hansy.tyly.admin.dealers.dao.mapper.PubFilesMapper.BaseResultMap">-->
+        <!--</collection>-->
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        distributor_no, distributor_name, legal_name, distributor_reg_no, company_type, distributor_addre,
+        distributor_contact, distributor_contact_phone, distributor_status, insert_date,
+        update_date, staff_no
+    </sql>
+
+    <sql id="info_search_where">
+
+        <if test="distributorName != null">
+            AND (i.distributor_name LIKE CONCAT('%','${distributorName}','%' ))
+        </if>
+        <if test="startTime != null">
+            AND (i.insert_date >= #{startTime})
+        </if>
+        <if test="endTime != null">
+            <![CDATA[
+            AND (i.insert_date<= #{endTime})
+            ]]>
+        </if>
+        <if test="distributorStatus != null">
+            AND (i.distributor_status = #{distributorStatus})
+        </if>
+        <if test="distributorStatus == null">
+            AND (i.distributor_status in ('10025002','10025004'))
+        </if>
+        <if test="distributorNo != null">
+            AND (i.distributor_no = #{distributorNo})
+        </if>
+    </sql>
+
+    <select id="listAll" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper.BaseResultMap">
+        SELECT i.*, u.*, ui.user_name d_user_name
+        FROM t_pub_distributor_info i
+        <choose>
+            <when test="staffName == null">
+                LEFT JOIN sys_user u ON i.staff_no = u.USER_ID
+            </when>
+            <otherwise>
+                INNER JOIN sys_user u ON i.staff_no = u.USER_ID AND (u.USER_NAME LIKE CONCAT('%', #{staffName}, '%'))
+            </otherwise>
+        </choose>
+        INNER JOIN t_user_base_info ui ON ui.user_no = i.distributor_no
+        <if test="userName != null">
+            AND (ui.user_name LIKE CONCAT('%',#{userName},'%' ))
+        </if>
+            <if test="distributorName != null">
+                AND (i.distributor_name LIKE CONCAT('%','${distributorName}','%' ))
+            </if>
+            <if test="startTime != null">
+                AND (i.insert_date >= #{startTime})
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+            AND (i.insert_date<= #{endTime})
+            ]]>
+            </if>
+            <if test="distributorStatus != null">
+                AND (i.distributor_status = #{distributorStatus})
+            </if>
+            <if test="distributorNo != null">
+                AND (i.distributor_no = #{distributorNo})
+            </if>
+    </select>
+
+    <select id="listAllOnSale" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper.BaseResultMap">
+        SELECT i.*, u.*
+        FROM t_pub_distributor_info i
+        <choose>
+            <when test="staffName == null">
+                LEFT JOIN sys_user u ON i.staff_no = u.USER_ID
+            </when>
+            <otherwise>
+                INNER JOIN sys_user u ON i.staff_no = u.USER_ID AND (u.USER_NAME LIKE CONCAT('%', #{staffName}, '%'))
+            </otherwise>
+        </choose>
+        <where>
+            <include refid="info_search_where"/>
+        </where>
+    </select>
+    <select id="listByStaffNo" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper.BaseResultMap">
+        SELECT i.*, u.*
+        FROM t_pub_distributor_info i
+        INNER JOIN sys_user u ON i.staff_no = u.USER_ID AND u.LOGIN_ID = #{loginId}
+        <include refid="info_search_where"/>
+    </select>
+    <select id="listByUserDept" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper.BaseResultMap">
+        SELECT i.*, u.*
+        FROM t_pub_distributor_info i
+        INNER JOIN sys_user u ON i.staff_no = u.USER_ID
+        INNER JOIN sys_r_user_org uo ON uo.USER_ID = i.staff_no AND uo.ORG_ID IN
+        <foreach collection="orgIds" index="index" item="item" open="(" separator="," close=")">
+             #{item}
+        </foreach>
+        <include refid="info_search_where"/>
+    </select>
+    <select id="selectByNo" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.DistributorInfoMapper.BaseResultMap">
+        SELECT i.*, u.*
+        FROM t_pub_distributor_info i
+        LEFT JOIN sys_user u ON i.staff_no = u.USER_ID
+        WHERE i.distributor_no = #{distributorNo} AND i.distributor_status = #{distributorStatus}
+    </select>
+    <select id="selectSaleAmount" resultType="java.math.BigDecimal">
+        SELECT SUM(total_amt)
+        FROM t_bus_order
+        WHERE sell_person = #{distributorNo} AND trans_status = #{orderStatus}
+    </select>
+    <select id="listByOrderNos" resultType="com.hansy.tyly.admin.dealers.dao.model.DistributorInfo">
+        SELECT i.* FROM t_pub_distributor_info i
+        INNER JOIN t_bus_order o ON o.sell_person = i.distributor_no AND o.order_no IN
+        <foreach collection="orderNos" index="index" item="orderNo" open="(" separator="," close=")">
+            #{orderNo}
+        </foreach>
+    </select>
+    <select id="selectByName" resultType="com.hansy.tyly.admin.dealers.dao.model.DistributorInfo">
+      SELECT * FROM t_pub_distributor_info WHERE distributor_name = #{distributorName}
+    </select>
+    <select id="listUngrouped" resultType="com.hansy.tyly.admin.dealers.dao.model.DistributorInfo">
+        SELECT * FROM t_pub_distributor_info WHERE distributor_no NOT IN
+        (SELECT gc.cust_no FROM t_pub_group_cust gc
+        INNER JOIN t_pub_group g ON g.group_no = gc.group_no AND g.group_type = #{groupType} AND g.group_status = '00001001'
+        INNER JOIN sys_user u ON g.create_no = u.USER_ID AND u.LOGIN_ID = #{loginId})
+    </select>
+    <select id="selectPayAmount" resultType="java.math.BigDecimal">
+        SELECT SUM(total_amt)
+        FROM t_bus_order
+        WHERE buy_person = #{distributorNo} AND trans_status = #{orderStatus}
+    </select>
+    <select id="listByMerNo" resultType="com.hansy.tyly.admin.dealers.dao.model.DistributorInfo">
+        SELECT i.* FROM t_pub_distributor_info i
+        INNER JOIN t_pub_distributor_mer m ON i.distributor_no = m.distributor_no AND m.mer_no = #{merNo}
+        WHERE i.distributor_status = '10025002'
+    </select>
+</mapper>

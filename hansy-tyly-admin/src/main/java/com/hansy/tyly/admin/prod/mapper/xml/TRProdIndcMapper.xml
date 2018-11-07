@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.prod.mapper.TRProdIndcMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TRProdIndc">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="INDC_ID" jdbcType="VARCHAR" property="indcId" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    SYS_UUID, PROD_ID, INDC_ID, `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+    <delete id="deletRProdIndc">
+      delete from sys_code_type where CODE_TYPE_ID in
+      <foreach item="typeId" collection="array" open="(" separator="," close=")">
+        #{typeId}
+      </foreach>
+    </delete>
+</mapper>

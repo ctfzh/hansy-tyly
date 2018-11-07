@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.base.mapper.ShiroMapper">
+
+  <select id="getRoles" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT DISTINCT
+        R.ROLE_ID
+    FROM
+        SYS_ROLE R
+    INNER JOIN SYS_R_USER_ROLE UR ON UR.ROLE_ID = R.ROLE_ID
+    INNER JOIN SYS_USER U ON U.USER_ID = UR.USER_ID
+    WHERE
+        U.LOGIN_ID = #{loginNo}
+    AND R.ROLE_TYPE = '10002001'
+    AND UR.`STATUS`='00001001'
+    AND R.`STATUS` = '00001001'
+    AND U.`STATUS` = '00001001'
+    AND U.USER_TYPE = '10003001'
+  </select>
+
+  <select id="getPerms" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT DISTINCT
+        M.MENU_ID
+    FROM
+        SYS_MENU M
+    INNER JOIN SYS_R_ROLE_MENU RM ON RM.MENU_ID = M.MENU_ID
+    INNER JOIN SYS_R_USER_ROLE UR ON UR.ROLE_ID = RM.ROLE_ID
+    INNER JOIN SYS_USER U ON U.USER_ID = UR.USER_ID
+    WHERE
+        M.MENU_ID IS NOT NULL
+    AND U.LOGIN_ID = #{loginNo}
+    AND U.`STATUS` = '00001001'
+    AND U.USER_TYPE = '10003001'
+    AND UR.`STATUS` = '00001001'
+    AND RM.`STATUS` = '00001001'
+    UNION
+        SELECT DISTINCT
+            M.AUTH_CODE
+        FROM
+            SYS_MENU M
+        INNER JOIN SYS_R_ROLE_MENU RM ON RM.MENU_ID = M.MENU_ID
+        INNER JOIN SYS_R_USER_ROLE UR ON UR.ROLE_ID = RM.ROLE_ID
+        INNER JOIN SYS_USER U ON U.USER_ID = UR.USER_ID
+        WHERE
+            M.AUTH_CODE IS NOT NULL
+        AND U.LOGIN_ID = #{loginNo}
+        AND U.`STATUS` = '00001001'
+        AND U.USER_TYPE = '10003001'
+        AND UR.`STATUS` = '00001001'
+        AND RM.`STATUS` = '00001001'
+  </select>
+  
+  <select id="getShiroPermssionChainBeans" resultType="com.hansy.tyly.core.shiro.ShiroChainBean">
+    SELECT t.url, group_concat(t.code) codes FROM (
+      SELECT DISTINCT m.MENU_ID code, m.MENU_URL url FROM sys_menu m
+      WHERE m.MENU_ID IS NOT NULL AND m.MENU_URL IS NOT null and m.`STATUS`='00001001'
+			and m.MENU_TYPE='10001001'
+      UNION
+      SELECT DISTINCT m.AUTH_CODE code, m.MENU_URL url FROM sys_menu m
+      WHERE m.MENU_ID IS NOT NULL AND m.MENU_URL IS NOT null and m.`STATUS`='00001001'
+			and m.MENU_TYPE='10001001'
+    ) t
+    GROUP BY t.url
+  </select>
+
+</mapper>

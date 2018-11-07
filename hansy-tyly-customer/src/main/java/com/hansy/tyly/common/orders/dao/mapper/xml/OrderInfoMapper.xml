@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hansy.tyly.common.orders.dao.mapper.OrderInfoMapper">
+
+	<resultMap id="BaseRefundListMap"
+		type="com.hansy.tyly.common.orders.pojo.OrderInfo">
+		<association property="order"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TBusOrderMapper.BaseResultMap" />
+		<association property="refund"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TBusRefundMapper.BaseResultMap" />
+	</resultMap>
+
+	<resultMap id="BaseRefundInfoMap"
+		type="com.hansy.tyly.common.orders.pojo.OrderInfo">
+		<association property="order"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TBusOrderMapper.BaseResultMap" />
+		<association property="refund"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TBusRefundMapper.BaseResultMap" />
+		<collection property="orderDetailList"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TBusOrderDetailMapper.BaseResultMap" />
+		<collection property="goodsBaseInfo"
+			resultMap="com.hansy.tyly.common.orders.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap" />
+	</resultMap>
+
+
+	<select id="getRefundListByParams" resultMap="BaseRefundListMap">
+	    select T1.*
+	    from t_bus_refund T1
+	    left join t_bus_order T2 on T1.order_no = T2.order_no
+	    <if test="apprStatus!=null">
+            and T1.appr_status=#{apprStatus}
+        </if>
+	</select>
+
+	<select id="getRefundInfoByKey" resultMap="BaseRefundInfoMap">
+		select T1.*
+		from t_bus_refund T1
+		left join t_bus_order T2 on T1.order_no=T2.order_no
+		left join t_bus_order_detail T3 on T1.order_no=T3.order_no
+		left join t_goods_base_info T4 on T4.goods_no=T3.goods_no
+
+	</select>
+	
+</mapper>

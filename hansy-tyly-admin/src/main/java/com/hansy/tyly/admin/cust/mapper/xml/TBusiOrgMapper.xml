@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hansy.tyly.admin.cust.mapper.TBusiOrgMapper">
+    <select id="queryTBusiOrgByOrgName" resultType="com.hansy.tyly.admin.dao.model.TBusiOrg">
+        select *  from t_busi_org where ORG_NAME=#{orgName}
+    </select>
+    <select id="queryCountCustOnOrg" resultType="java.lang.Integer">
+        select count(*) from t_busi_cust where ORG_ID=#{orgId}
+    </select>
+    <select id="queryBusiOrgByCondi" resultType="java.util.Map">
+        SELECT
+        a.*,
+        IFNULL(b.custs,0) custs
+        FROM
+        t_busi_org a
+        LEFT JOIN (
+        SELECT
+        org_id orgid,
+        count(1) custs
+        FROM
+        sys_r_user_org
+        where STATUS='00001001'
+        GROUP BY
+        org_id
+        ) b ON a.org_id = b.orgid where 1=1
+        <if test="orgName != null and orgName != ''">
+            AND a.org_name LIKE concat(concat('%',#{orgName}),'%')
+        </if>
+        <if test="instDate != null and instDate != ''">
+            <![CDATA[AND DATE_FORMAT(a.insert_time,'%Y-%m-%d') =DATE_FORMAT(#{instDate},'%Y-%m-%d')]]>
+        </if>
+        order by a.insert_time desc
+    </select>
+    <select id="getCountBind" resultType="java.lang.Integer">
+
+    </select>
+</mapper>

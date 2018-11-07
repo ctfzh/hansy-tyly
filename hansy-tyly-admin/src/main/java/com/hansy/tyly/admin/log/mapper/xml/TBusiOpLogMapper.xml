@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.log.mapper.TBusiOpLogMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiOpLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+    <result column="BUSI_OP_TYPE" jdbcType="VARCHAR" property="busiOpType" />
+    <result column="ORG_ID" jdbcType="VARCHAR" property="orgId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    SYS_UUID, BUSI_OP_TYPE, ORG_ID, USER_ID, CUST_ID, PROD_ID, INSERT_TIME, INSERT_USER_ID, 
+    UPDATE_TIME
+  </sql>
+  <select id="getOpLogLists" resultType="java.util.Map">
+      SELECT
+          op.INSERT_TIME,
+          op.BUSI_OP_TYPE,
+          su.USER_NAME,
+          tor.ORG_NAME,
+          tbc.CUST_NAME,
+          tbp.PROD_NAME
+      FROM
+          t_busi_op_log op
+      LEFT JOIN sys_user su ON op.USER_ID = su.USER_ID
+      LEFT JOIN t_busi_org tor ON tor.ORG_ID = op.org_id
+      LEFT JOIN t_busi_cust tbc ON tbc.CUST_ID = op.CUST_ID
+      LEFT JOIN t_busi_prod tbp ON tbp.PROD_ID = op.PROD_ID
+      WHERE 1=1
+      <if test="orgName != null and orgName != ''">
+        AND tor.ORG_NAME LIKE concat(concat('%',#{orgName}),'%')
+      </if>
+      <if test="sBody != null and sBody != ''">
+        AND su.user_name LIKE concat(concat('%',#{sBody}),'%')
+      </if>
+      <if test="busiOpType != null and busiOpType != ''">
+        AND op.BUSI_OP_TYPE LIKE concat(concat('%',#{busiOpType}),'%')
+      </if>
+      <if test="instDate != null and instDate != ''">
+        <![CDATA[AND DATE_FORMAT(op.INSERT_TIME,'%Y-%m-%d') = DATE_FORMAT(#{instDate},'%Y-%m-%d')]]>
+      </if>
+      order by op.INSERT_TIME desc
+  </select>
+</mapper>

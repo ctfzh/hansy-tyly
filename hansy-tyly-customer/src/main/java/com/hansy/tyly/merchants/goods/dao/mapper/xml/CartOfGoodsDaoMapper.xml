@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.merchants.goods.dao.mapper.CartOfGoodsDaoMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.merchants.goods.dao.model.CartOfGoods">
+        <association property="goodsBaseInfo" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <association property="shoppCart" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TBusShoppCartMapper.BaseResultMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="findCartOfGoodsByParams"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TBusShoppCartMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        inner join t_bus_shopp_cart cart on base.goods_no=cart.goods_no
+        left join t_goods_distributor_mer disMer on disMer.goods_no=cart.goods_no and disMer.mer_no=cart.cust_no
+        left join t_goods_files file on base.goods_no=file.goods_no
+        and base.mian_pic_file_no=file.file_no
+        where
+            cart.cust_no=#{custNo} and cart.cust_type=#{custType}
+        <if test="disNo !=null">
+            and disMer.distributor_no=#{disNo}
+        </if>
+    </select>
+
+    <select id="selectXYAmtByGoodsNo"  resultType="java.math.BigDecimal">
+        SELECT
+        disMer.goods_amt
+        from t_goods_distributor_mer disMer
+        where disMer.goods_no=#{goodsNo} and disMer.mer_no=#{custNo}
+    </select>
+
+</mapper>

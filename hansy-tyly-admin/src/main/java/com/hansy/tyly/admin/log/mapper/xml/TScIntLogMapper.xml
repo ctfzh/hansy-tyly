@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.log.mapper.TScIntLogMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TScIntLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+    <result column="BILL_ID" jdbcType="VARCHAR" property="billId" />
+    <result column="INT_TYPE" jdbcType="VARCHAR" property="intType" />
+    <result column="LOG_STATE" jdbcType="VARCHAR" property="logState" />
+    <result column="ERROR_REASON" jdbcType="VARCHAR" property="errorReason" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    SYS_UUID, BILL_ID, INT_TYPE, `STATE`, INSERT_TIME, INSERT_USER_ID
+  </sql>
+  <select id="getLogLists" resultType="java.util.Map">
+    SELECT
+        e.ORG_NAME,
+        f.USER_NAME,
+        d.CUST_NAME,
+        a.INSERT_TIME,
+        c.PROD_NAME,
+        c.RULE_ID,
+        a.ERROR_REASON,
+        <!--b.SCHEDULE_STATUS,-->
+        a.LOG_STATE
+    FROM
+        t_sc_int_log a
+    LEFT JOIN t_busi_bill_his b ON a.BILL_ID = b.BILL_ID
+    LEFT JOIN t_busi_prod c ON b.PROD_ID = c.PROD_ID
+    LEFT JOIN t_busi_cust d ON b.CUST_ID = d.CUST_ID
+    LEFT JOIN t_busi_org e ON d.ORG_ID = e.ORG_ID
+    LEFT JOIN sys_user f ON d.USER_ID = f.USER_ID
+    WHERE a.INT_TYPE='10015002'
+    <if test="orgName != null and orgName != ''">
+      AND e.ORG_NAME LIKE concat(concat('%',#{orgName}),'%')
+    </if>
+    <if test="prodName != null and prodName != ''">
+      AND c.PROD_NAME LIKE concat(concat('%',#{prodName}),'%')
+    </if>
+    <if test="scheduleStatus != null and scheduleStatus != ''">
+      AND b.SCHEDULE_STATUS LIKE concat(concat('%',#{scheduleStatus}),'%')
+    </if>
+    <if test="logState != null and logState != ''">
+      AND a.LOG_STATE LIKE concat(concat('%',#{logState}),'%')
+    </if>
+    <if test="instDate != null and instDate != ''">
+      <![CDATA[AND DATE_FORMAT(a.INSERT_TIME,'%Y-%m-%d') = DATE_FORMAT(#{instDate},'%Y-%m-%d')]]>
+    </if>
+    order by a.INSERT_TIME desc
+  </select>
+</mapper>

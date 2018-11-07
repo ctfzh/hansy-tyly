@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hansy.tyly.common.orders.dao.mapper.TBusOrderMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.common.orders.dao.model.TBusOrder">
+		<!-- WARNING - @mbg.generated -->
+
+		<id column="order_no" jdbcType="VARCHAR"
+			property="orderNo" />
+		<result column="total_amt" jdbcType="DECIMAL"
+			property="totalAmt" />
+		<result column="trans_status" jdbcType="VARCHAR"
+			property="transStatus" />
+		<result column="trans_date" jdbcType="TIMESTAMP"
+				property="transDate" />
+		<result column="update_date" jdbcType="TIMESTAMP"
+			property="updateDate" />
+		<result column="order_type" jdbcType="VARCHAR"
+			property="orderType" />
+		<result column="contact_name" jdbcType="VARCHAR"
+			property="contactName" />
+		<result column="contact_addre" jdbcType="VARCHAR"
+			property="contactAddre" />
+		<result column="contact_phone" jdbcType="VARCHAR"
+			property="contactPhone" />
+		<result column="zip_code" jdbcType="VARCHAR"
+			property="zipCode" />
+		<result column="pay_type" jdbcType="VARCHAR"
+			property="payType" />
+		<result column="buy_person" jdbcType="VARCHAR"
+			property="buyPerson" />
+		<result column="sell_person" jdbcType="VARCHAR"
+			property="sellPerson" />
+
+	</resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        bo.order_no,  bo.total_amt,  bo.trans_status, bo.trans_date, bo.update_date,  bo.order_type,  bo.contact_name,  bo.contact_addre,
+        bo.contact_phone,  bo.zip_code,  bo.pay_type,  bo.buy_person,  bo.sell_person
+    </sql>
+
+	<!-- 查询订单列表 -->
+	<select id="queryOrderList" resultType="java.util.Map">
+		select
+		goods_name,goods_amt,goods_num,goods_sale_num,mer_name,pay_type,trans_status
+		from
+		(select T1.order_no,T1.trans_status,T1.pay_type,T2.goods_no,T3.mer_name
+		from
+		t_bus_order T1
+		left join t_bus_order_detail T2 on T1.order_no = T2.order_no
+		left join t_pub_mer_info T3 on T1.buy_person = T3.mer_no
+		) L1
+		left join
+		(select
+		T4.order_no,T4.goods_num,T4.goods_amt,T3.goods_no,T3.goods_name,T3.goods_sale_num
+		from t_bus_order_detail T4
+		left join t_goods_base_info T3 on T4.goods_no = T3.goods_no
+		)L2
+		on
+		L1.order_no = L2.order_no
+		and
+		L1.goods_no = L2.goods_no
+		<where>
+			<if test="transStatus!=null">
+				and T1.trans_status=#{transStatus}
+			</if>
+			<if test="orderNo!=null">
+				and L1.order_no like CONCAT('%',#{orderNo},'%')
+			</if>
+		</where>
+	</select>
+	
+	<update id="getScheduleTimer">
+		update t_bus_order
+		set trans_status = "10024005"
+		where trans_status ="10024003"
+		and datediff(curdate(), date(update_date)) >= #{receivingDate}
+	</update>
+
+	<update id="updateStatusByPrimaryKey">
+		update t_bus_order
+		set trans_status = #{changeStatus},
+		update_date=NOW()
+		where
+		order_no=#{orderNo}
+		/*待发货之前 是 待付款*/
+		<if test="changeStatus == '10024002'">
+			and trans_status ='10024001'
+		</if>
+		/*//待收货之前 是 待发货*/
+		<if test="changeStatus == '10024003'">
+			and trans_status ='10024002'
+		</if>
+		/* //已成功之前 是待收货*/
+		<if test="changeStatus == '10024005'">
+			and trans_status ='10024003'
+		</if>
+		/* //退款成功之前 只 待退款*/
+		<if test="changeStatus == '10024007'">
+			and trans_status in ('10024004','10024009')
+		</if>
+		/*//已取消之前 是 待付款*/
+		<if test="changeStatus == '10024006'">
+			and trans_status ='10024001'
+		</if>
+
+		/*//待退款之前 是*/
+		<if test="changeStatus == '10024004'">
+			and
+			<![CDATA[ trans_status <> '10024001' ]]>
+			and
+			<![CDATA[ trans_status <> '10024007' ]]>
+			and
+			<![CDATA[ trans_status <> '10024006' ]]>
+
+		</if>
+		/*/部分退款之前 是*/
+		<if test="changeStatus == '10024009'">
+			and
+			<![CDATA[ trans_status <> '10024001' ]]>
+			and
+			<![CDATA[ trans_status <> '10024007' ]]>
+			and
+			<![CDATA[ trans_status <> '10024006' ]]>
+
+		</if>
+
+
+
+
+
+	</update>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.system.mapper.SysParameterMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.customer.system.model.SysParameter">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="PARA_ID" jdbcType="VARCHAR" property="paraId" />
+    <result column="PARA_NAME" jdbcType="VARCHAR" property="paraName" />
+    <result column="PARA_VALUE" jdbcType="VARCHAR" property="paraValue" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    PARA_ID, PARA_NAME, PARA_VALUE, `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+</mapper>

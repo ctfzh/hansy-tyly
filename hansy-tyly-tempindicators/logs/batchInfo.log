@@ -1,0 +1,69 @@
+2018-07-20 15:17:01.026  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : Starting Startup on qiubin with PID 8324 (D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators\target\classes started by z in D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators)
+2018-07-20 15:17:01.034 DEBUG 8324 --- [main] com.lemoncome.watchdog.Startup           : Running with Spring Boot v1.5.7.RELEASE, Spring v4.3.11.RELEASE
+2018-07-20 15:17:01.035  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : The following profiles are active: dev
+2018-07-20 15:17:01.199  INFO 8324 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@49ec71f8: startup date [Fri Jul 20 15:17:01 CST 2018]; root of context hierarchy
+2018-07-20 15:17:02.949 DEBUG 8324 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : Searching for mappers annotated with @Mapper
+2018-07-20 15:17:02.955 DEBUG 8324 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : Using auto-configuration base package 'com.lemoncome.watchdog'
+2018-07-20 15:17:03.005  WARN 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.lemoncome.watchdog]' package. Please check your configuration.
+2018-07-20 15:17:03.305 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators\target\classes\com\lemoncome\watchdog\riskbatch\mapper\BigDataSubmitMapper.class]
+2018-07-20 15:17:03.306 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators\target\classes\com\lemoncome\watchdog\tempindicators\mapper\TempindicatorsMapper.class]
+2018-07-20 15:17:03.307 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper' and 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper' mapperInterface
+2018-07-20 15:17:03.307 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper'.
+2018-07-20 15:17:03.308 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper' and 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper' mapperInterface
+2018-07-20 15:17:03.308 DEBUG 8324 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper'.
+2018-07-20 15:17:03.311  WARN 8324 --- [main] o.s.c.a.ConfigurationClassPostProcessor  : Cannot enhance @Configuration bean definition 'mybatisConfiguration' since its singleton instance has been created too early. The typical cause is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor return type: Consider declaring such methods as 'static'.
+2018-07-20 15:17:05.892  INFO 8324 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8080 (http)
+2018-07-20 15:17:05.929  INFO 8324 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2018-07-20 15:17:05.931  INFO 8324 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.20
+2018-07-20 15:17:06.241  INFO 8324 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-07-20 15:17:06.241  INFO 8324 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 5050 ms
+2018-07-20 15:17:06.609  INFO 8324 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-07-20 15:17:06.629  INFO 8324 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-07-20 15:17:06.635  INFO 8324 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-07-20 15:17:06.636  INFO 8324 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-07-20 15:17:06.636  INFO 8324 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-07-20 15:17:07.431 DEBUG 8324 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Scanned package: 'com.lemoncome.watchdog.**.model' for aliases
+2018-07-20 15:17:08.107 DEBUG 8324 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Parsed mapper file: 'file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators\target\classes\com\lemoncome\watchdog\riskbatch\mapper\xml\BigDataSubmitMapper.xml]'
+2018-07-20 15:17:08.327 DEBUG 8324 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Parsed mapper file: 'file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-tempindicators\target\classes\com\lemoncome\watchdog\tempindicators\mapper\xml\TempindicatorsMapper.xml]'
+2018-07-20 15:17:10.383  INFO 8324 --- [main] org.mongodb.driver.cluster               : Cluster created with settings {hosts=[10.30.21.180:27017], mode=MULTIPLE, requiredClusterType=UNKNOWN, serverSelectionTimeout='30000 ms', maxWaitQueueSize=2500}
+2018-07-20 15:17:10.383  INFO 8324 --- [main] org.mongodb.driver.cluster               : Adding discovered server 10.30.21.180:27017 to client view of cluster
+2018-07-20 15:17:10.769  INFO 8324 --- [main] c.l.w.core.holder.SpringContextHolder    : # SpringContextHolder 设定成功
+2018-07-20 15:17:11.572  INFO 8324 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@49ec71f8: startup date [Fri Jul 20 15:17:01 CST 2018]; root of context hierarchy
+2018-07-20 15:17:11.756  INFO 8324 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/api/tempindicators/tem],methods=[POST]}" onto public void com.lemoncome.watchdog.cotroller.TempindicatorsController.queryCodeType(java.lang.String)
+2018-07-20 15:17:11.763  INFO 8324 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-07-20 15:17:11.764  INFO 8324 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-07-20 15:17:11.828  INFO 8324 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-07-20 15:17:11.829  INFO 8324 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-07-20 15:17:11.929  INFO 8324 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-07-20 15:17:12.038 DEBUG 8324 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : No org.mybatis.spring.mapper.MapperFactoryBean found.
+2018-07-20 15:17:12.629  INFO 8324 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-07-20 15:17:12.633  INFO 8324 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+2018-07-20 15:17:12.646  INFO 8324 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.alibaba.druid.pool:name=dataSource,type=DruidDataSource]
+2018-07-20 15:17:12.807  INFO 8324 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8080 (http)
+2018-07-20 15:17:12.926  INFO 8324 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2018-07-20 15:17:13.654  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : # ————————————————————————————————————————————————— 
+2018-07-20 15:17:13.654  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : # 看家狗跑批系统(Watchdog Tempindicators V1.0.0) 启动
+2018-07-20 15:17:13.655  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : # 系统运行环境：dev
+2018-07-20 15:17:13.655  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : # 系统临时目录：C:\Users\z\AppData\Local\Temp\
+2018-07-20 15:17:13.655  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : # ————————————————————————————————————————————————— 
+2018-07-20 15:17:13.658  INFO 8324 --- [main] com.lemoncome.watchdog.Startup           : Started Startup in 13.625 seconds (JVM running for 14.329)
+2018-07-20 15:17:30.653  INFO 8324 --- [cluster-ClusterId{value='5b518c7678ae2120841f57d2', description='null'}-10.30.21.180:27017] org.mongodb.driver.cluster               : Exception in monitor thread while connecting to server 10.30.21.180:27017
+
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:63) ~[mongo-java-driver-3.4.3.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.open(InternalStreamConnection.java:115) ~[mongo-java-driver-3.4.3.jar:na]
+	at com.mongodb.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:113) ~[mongo-java-driver-3.4.3.jar:na]
+	at java.lang.Thread.run(Unknown Source) [na:1.8.0_151]
+Caused by: java.net.SocketTimeoutException: connect timed out
+	at java.net.DualStackPlainSocketImpl.waitForConnect(Native Method) ~[na:1.8.0_151]
+	at java.net.DualStackPlainSocketImpl.socketConnect(Unknown Source) ~[na:1.8.0_151]
+	at java.net.AbstractPlainSocketImpl.doConnect(Unknown Source) ~[na:1.8.0_151]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(Unknown Source) ~[na:1.8.0_151]
+	at java.net.AbstractPlainSocketImpl.connect(Unknown Source) ~[na:1.8.0_151]
+	at java.net.PlainSocketImpl.connect(Unknown Source) ~[na:1.8.0_151]
+	at java.net.SocksSocketImpl.connect(Unknown Source) ~[na:1.8.0_151]
+	at java.net.Socket.connect(Unknown Source) ~[na:1.8.0_151]
+	at com.mongodb.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:57) ~[mongo-java-driver-3.4.3.jar:na]
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:58) ~[mongo-java-driver-3.4.3.jar:na]
+	... 3 common frames omitted
+

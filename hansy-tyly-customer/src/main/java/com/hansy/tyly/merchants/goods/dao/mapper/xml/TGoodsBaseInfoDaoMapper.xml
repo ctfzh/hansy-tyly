@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoDaoMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.merchants.goods.dao.model.GoodsBaseInfos">
+        <association property="goodsBaseInfo" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <association property="distributorMer" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMerMapper.BaseResultMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+    <resultMap id="BaseReturnMap" type="com.hansy.tyly.merchants.goods.dao.model.GoodsBaseInfos">
+        <association property="goodsBaseInfo" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <association property="distributor" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMapper.BaseResultMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="findGoodsListByParams"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMerMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        left join t_goods_distributor_mer disMer on base.goods_no=disMer.goods_no
+        left join t_goods_files file on base.goods_no=file.goods_no
+          and base.mian_pic_file_no=file.file_no
+        where base.goods_status=#{goodsStatus}
+          and disMer.distributor_no=#{disNo}
+          and disMer.on_status ='10022011'
+          and disMer.mer_no=#{merNo}
+        <if test="typeNo!=null" >
+          and base.type_no=#{typeNo}
+        </if>
+        <if test="goodsName!=null" >
+            and base.goods_name  like CONCAT('%',#{goodsName},'%')
+        </if>
+        order by base.goods_sale_num desc
+
+
+    </select>
+
+    <select id="getHotGoods"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMerMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        left join t_goods_distributor dis on dis.goods_no=base.goods_no
+        left join t_goods_distributor_mer disMer on dis.goods_no=disMer.goods_no
+          and dis.distributor_no =disMer.distributor_no
+          and disMer.on_status ='10022011'
+        left join t_goods_files file on base.goods_no=file.goods_no
+          and base.mian_pic_file_no=file.file_no
+        where disMer.mer_no=#{merNo}
+          and disMer.on_status=#{onStatus}
+          and dis.distributor_no = #{disNo}
+          and base.goods_status=#{goodsStatus}
+        order by base.goods_sale_num desc limit 4
+    </select>
+
+    <select id="getGoodsInfo"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMerMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        left join t_goods_distributor_mer disMer  on base.goods_no=disMer.goods_no
+        where base.goods_no =#{goodsNo}
+
+        and disMer.distributor_no=#{disNo}
+        and disMer.mer_no=#{merNo}
+    </select>
+
+
+    <select id="selectDisByGoodsNo"  resultType="java.util.Map">
+        SELECT
+        pubDis.distributor_name  disName
+        from t_goods_base_info base
+        inner join t_goods_distributor dis on  dis.goods_no=base.goods_no
+        join t_goods_distributor_mer disMer on dis.distributor_no=disMer.distributor_no and disMer.mer_no=#{merNo}
+        join t_pub_distributor_info pubDis on pubDis.distributor_no=disMer.distributor_no
+        where base.goods_no =#{goodsNo}
+    </select>
+</mapper>

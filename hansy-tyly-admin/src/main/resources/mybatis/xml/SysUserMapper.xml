@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.mapper.sys.SysUserMapper">
+  <select id="queryUserRolesByUserId" resultType="com.hansy.tyly.admin.dao.model.SysRole">
+      SELECT
+          DISTINCT a.*
+      FROM
+          sys_role a,
+          sys_r_user_role b
+      WHERE
+          b.role_id = a.role_id
+      AND b.user_id = #{userId}
+      AND a.status = #{status}
+      AND a.role_type=#{roleType}
+  </select>
+  <select id="queryUserMenusByUserId" resultType="com.hansy.tyly.admin.dao.model.SysMenu">
+      SELECT
+          DISTINCT a.*
+      FROM
+          sys_r_user_role b,
+          sys_r_role_menu c,
+          sys_menu a
+      WHERE
+          c.role_id = b.role_id
+      AND a.menu_id = c.menu_id
+      AND b.user_id = #{userId}
+      AND a.status=#{status}
+      AND a.menu_type=#{menuType}
+  </select>
+    <select id="querySysUserByUserName" resultType="com.hansy.tyly.admin.dao.model.SysUser">
+        select * from sys_user a where a.LOGIN_ID=#{userName} and a.status=#{status} and a.USER_TYPE=#{userType}
+    </select>
+    <select id="queryUsersAndRole" resultType="java.util.Map">
+        SELECT
+            a.*, c.ROLE_ID,
+            c.ROLE_NAME,
+            b.SYS_UUID
+        FROM
+            sys_user a
+        LEFT JOIN sys_r_user_role b ON a.USER_ID = b.USER_ID
+        LEFT JOIN sys_role c ON b.ROLE_ID = c.ROLE_ID
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="userName != null and userName != ''">
+                AND a.USER_NAME = #{userName}
+            </if>
+            <if test="name != null and name != ''">
+                AND a. LOGIN_ID = #{loginId}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                AND c.ROLE_NAME = #{roleName}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.STATUS = #{status}
+            </if>
+            <if test="userType != null and userType != ''">
+                AND a.USER_TYPE = #{userType}
+            </if>
+        </trim>
+    </select>
+</mapper>

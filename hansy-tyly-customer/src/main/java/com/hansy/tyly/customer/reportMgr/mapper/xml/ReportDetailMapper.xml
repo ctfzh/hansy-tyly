@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.reportMgr.mapper.ReportDetailMapper">
+
+	<!-- 获取特定某天的风险概况统计情况 -->
+	<select id="queryRiskGeneralData" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT L1.*,L1.MNG_CNT-L1.RISK_CNT-L1.WARN_CNT AS SAFE_CNT FROM (
+		SELECT T1.BUSI_DATE,SUM(T1.MNG_CNT) AS MNG_CNT,SUM(T1.RISK_CNT) AS
+		RISK_CNT,SUM(T1.WARN_CNT) AS WARN_CNT
+		FROM T_RPT_CUST_RISK T1
+		WHERE T1.ORG_ID = #{orgId}
+		<if test="userId !=null and userId !=''">
+			AND T1.USER_ID = #{userId}
+		</if>
+		GROUP BY T1.BUSI_DATE ORDER BY T1.BUSI_DATE DESC ) L1 WHERE
+		L1.BUSI_DATE=#{busiDate}
+	</select>
+
+	<!-- 获取最新10条风险最大的客户信息 -->
+	<select id="queryTop10RiskCustInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L1.SYS_UUID,L1.BUSI_DATE,L1.USER_ID,T2.CUST_ID,T2.CUST_NAME,T2.CUST_CERT_NO,T2.CUST_TEL,T2.TOP_ORDER
+		FROM
+		T_RPT_RISK_CUST_TOP_DTL T2,(
+		SELECT
+		T1.SYS_UUID,T1.BUSI_DATE,T1.USER_ID
+		FROM
+		T_RPT_RISK_CUST_TOP T1
+		WHERE
+		T1.ORG_ID = #{orgId} AND T1.BUSI_DATE = #{busiDate}
+		<if test="userId !=null and userId !=''">
+			AND T1.USER_ID = #{userId}
+		</if>
+		) L1 WHERE T2.RISK_CUST_TOP_ID = L1.SYS_UUID ORDER BY T2.TOP_ORDER ASC
+		LIMIT 10
+	</select>
+
+	<!-- 多重借贷命中趋势查询 -->
+	<select id="queryMultLoanHitInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L2.INDC_ID,L3.INDICATOR_NAME,L2.INDC_VALUE
+		FROM( SELECT
+		T2.INDC_ID,SUM(T2.INDC_VALUE) AS INDC_VALUE
+		FROM
+		T_RPT_REPEAT_INDC_DTL T2,(
+		SELECT T1.BUSI_DATE,T1.SYS_UUID
+		FROM
+		T_RPT_REPEAT_INDC T1
+		WHERE
+		T1.ORG_ID = #{orgId} AND T1.BUSI_DATE = #{busiDate}
+		<if test="userId !=null and userId !=''">
+			AND T1.USER_ID = #{userId}
+		</if>
+		) L1
+		WHERE
+		T2.REPEAT_INDC_ID = L1.SYS_UUID
+		GROUP BY T2.INDC_ID ORDER BY T2.INDC_ID_ORDER
+		) L2,T_BUSI_INDICATOR L3 WHERE
+		L2.INDC_ID = L3.INDICATOR_ID
+	</select>
+
+	<!-- 黑名单命中趋势查询 -->
+	<select id="queryBlackHitInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L2.INDC_ID,L3.INDICATOR_NAME,L2.INDC_VALUE
+		FROM( SELECT
+		T2.INDC_ID,SUM(T2.INDC_VALUE) AS INDC_VALUE
+		FROM
+		T_RPT_BLACK_INDC_DTL T2,(
+		SELECT T1.BUSI_DATE,T1.SYS_UUID
+		FROM
+		T_RPT_BLACK_INDC T1
+		WHERE
+		T1.ORG_ID = #{orgId} AND T1.BUSI_DATE = #{busiDate}
+		<if test="userId !=null and userId !=''">
+			AND T1.USER_ID = #{userId}
+		</if>
+		) L1
+		WHERE
+		T2.BLACK_INDC_ID = L1.SYS_UUID
+		GROUP BY T2.INDC_ID ORDER BY T2.INDC_ID_ORDER
+		) L2,T_BUSI_INDICATOR L3 WHERE
+		L2.INDC_ID = L3.INDICATOR_ID
+	</select>
+
+</mapper>

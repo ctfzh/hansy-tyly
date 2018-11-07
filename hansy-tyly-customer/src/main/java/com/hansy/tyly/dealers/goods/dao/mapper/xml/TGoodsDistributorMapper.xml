@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.goods.dao.model.TGoodsDistributor">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="INTEGER" property="tableKey" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="goods_stock" jdbcType="INTEGER" property="goodsStock" />
+    <result column="goods_stock_threshold" jdbcType="INTEGER" property="goodsStockThreshold" />
+    <result column="on_status" jdbcType="TINYINT" property="onStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    dis.table_key as table_key, dis.goods_no as goods_no, dis.distributor_no as distributor_no,
+    dis.goods_stock as goods_stock,dis.goods_stock_threshold as goods_stock_threshold,
+    dis.on_status as on_status
+  </sql>
+  <select id="getSaleOrBuy" resultType="java.util.Map">
+  select a.click_date,ifnull(b.count,0) as count ,ifnull(c.count,0) as saleCount
+  from (
+      SELECT str_to_date(#{date},'%Y-%m-%d') as click_date
+      <if test="dateType == 'day' ">
+
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} day) as click_date
+          </foreach>
+
+      </if>
+      <if test="dateType == 'month' ">
+
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} MONTH ) as click_date
+          </foreach>
+      </if>
+      <if test="dateType == 'year' ">
+
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} YEAR ) as click_date
+          </foreach>
+      </if>
+
+
+  ) a left join (
+
+    select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(update_date,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(update_date,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(update_date,'%Y') as datetime,
+
+      </if>
+
+      sum(total_amt) as count
+
+    from t_bus_order where buy_person= #{disNo}  and order_type =10022007 and  (trans_status=10024005 or trans_status=10024008)
+
+    group by datetime
+
+  ) b
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=b.datetime
+
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=b.datetime
+
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=b.datetime
+
+      </if>
+
+
+
+    left join (
+    select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(torder.update_date,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(torder.update_date,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(torder.update_date,'%Y') as datetime,
+
+      </if>
+      sum(torder.total_amt) as count
+    from t_bus_order  torder where torder.sell_person= #{disNo} and torder.trans_status=10024005
+    group by datetime
+
+
+  ) c
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=c.datetime
+
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=c.datetime
+
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=c.datetime
+
+      </if>
+
+
+  order by click_date;
+
+
+
+
+  </select>
+
+    <select id="getBuyGoods" resultType="java.util.Map">
+        select
+        type.type_name,
+        sum(detail.goods_num) as goodsNum
+        from t_bus_order  torder
+        left join  t_bus_order_detail detail on detail.order_no=torder.order_no
+        left join t_goods_base_info goods on goods.goods_no = detail.goods_no
+        left join t_goods_type type on type.type_no= goods.type_no
+        where torder.buy_person= #{disNo}  and torder.order_type =10022007 and (torder.trans_status=10024005 or torder.trans_status=10024008)
+        <if test="dateType == 'day' ">
+
+            and date_format(torder.update_date,'%Y-%m-%d')  &gt;=    date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} day ),'%Y-%m-%d')
+            and date_format(torder.update_date,'%Y-%m-%d') &lt;= date_format(#{date},'%Y-%m-%d')
+
+        </if>
+        <if test="dateType == 'month' ">
+
+            and date_format(torder.update_date,'%Y-%m')  &gt;=   date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} month ),'%Y-%m')
+            and   date_format(torder.update_date,'%Y-%m') &lt;= date_format(#{date},'%Y-%m')
+
+        </if>
+        <if test="dateType == 'year' ">
+
+            and date_format(torder.update_date,'%Y')  &gt;= date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} year ),'%Y')
+            and  date_format(torder.update_date,'%Y') &lt;= date_format(#{date},'%Y')
+
+        </if>
+
+
+        group by type.type_no
+
+
+
+    </select>
+
+    <select id="getSaleGoods" resultType="java.util.Map">
+       select
+	    type.type_name,
+	    sum(detail.goods_num) as goodsNum
+         from t_bus_order  torder
+         left join  t_bus_order_detail detail on detail.order_no=torder.order_no
+         left join t_goods_base_info goods on goods.goods_no = detail.goods_no
+         left join t_goods_type type on type.type_no= goods.type_no
+         where torder.sell_person= #{disNo} and torder.trans_status=10024005
+        <if test="dateType == 'day' ">
+
+            and date_format(torder.update_date,'%Y-%m-%d')  &gt;=    date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} day ),'%Y-%m-%d')
+            and date_format(torder.update_date,'%Y-%m-%d') &lt;= date_format(#{date},'%Y-%m-%d')
+
+        </if>
+        <if test="dateType == 'month' ">
+
+            and date_format(torder.update_date,'%Y-%m')  &gt;=   date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} month ),'%Y-%m')
+            and   date_format(torder.update_date,'%Y-%m') &lt;= date_format(#{date},'%Y-%m')
+
+        </if>
+        <if test="dateType == 'year' ">
+
+            and date_format(torder.update_date,'%Y')  &gt;= date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{num} year ),'%Y')
+            and  date_format(torder.update_date,'%Y') &lt;= date_format(#{date},'%Y')
+
+        </if>
+
+         group by type.type_no
+
+
+
+    </select>
+
+    <select id="getLiveMer" resultType="java.util.Map">
+      select a.click_date,ifnull(b.count,0) as regionCount ,ifnull(c.count,0) as buyCount
+    from (
+        SELECT str_to_date(#{date},'%Y-%m-%d') as click_date
+        <if test="dateType == 'day' ">
+            <foreach collection="list" index="index" item="item">
+                union all
+                SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} day) as click_date
+            </foreach>
+
+        </if>
+        <if test="dateType == 'month' ">
+            <foreach collection="list" index="index" item="item">
+                union all
+                SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} MONTH ) as click_date
+            </foreach>
+        </if>
+        <if test="dateType == 'year' ">
+            <foreach collection="list" index="index" item="item">
+                union all
+                SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} YEAR ) as click_date
+            </foreach>
+        </if>
+        ) a left join (
+
+
+    select
+        <if test="dateType == 'day' ">
+            DATE_FORMAT(disMer.insert_date,'%Y-%m-%d') as datetime,
+        </if>
+        <if test="dateType == 'month' ">
+            DATE_FORMAT(disMer.insert_date,'%Y-%m') as datetime,
+        </if>
+        <if test="dateType == 'year' ">
+            DATE_FORMAT(disMer.insert_date,'%Y') as datetime,
+
+        </if>
+
+
+    count(DISTINCT disMer.mer_no) as count
+    from t_pub_distributor_mer disMer
+    where   disMer.distributor_no=#{disNo}
+    group by datetime
+
+
+    ) b
+        <if test="dateType == 'day' ">
+            on   date_format(a.click_date,'%Y-%m-%d')=b.datetime
+
+        </if>
+        <if test="dateType == 'month' ">
+            on   date_format(a.click_date,'%Y-%m')=b.datetime
+
+        </if>
+        <if test="dateType == 'year' ">
+            on  date_format(a.click_date,'%Y')=b.datetime
+
+        </if>
+
+
+
+    left join (
+
+
+    select
+        <if test="dateType == 'day' ">
+            DATE_FORMAT(tOrder.trans_date,'%Y-%m-%d') as datetime,
+        </if>
+        <if test="dateType == 'month' ">
+            DATE_FORMAT(tOrder.trans_date,'%Y-%m') as datetime,
+        </if>
+        <if test="dateType == 'year' ">
+            DATE_FORMAT(tOrder.trans_date,'%Y') as datetime,
+
+        </if>
+
+    count(DISTINCT tOrder.buy_person) as count
+    from t_bus_order tOrder
+    where   tOrder.sell_person=#{disNo}
+    group by datetime
+
+    ) c
+        <if test="dateType == 'day' ">
+            on   date_format(a.click_date,'%Y-%m-%d')=c.datetime
+
+        </if>
+        <if test="dateType == 'month' ">
+            on   date_format(a.click_date,'%Y-%m')=c.datetime
+
+        </if>
+        <if test="dateType == 'year' ">
+            on  date_format(a.click_date,'%Y')=c.datetime
+
+        </if>
+
+
+
+    order by click_date;
+    </select>
+
+
+
+
+</mapper>

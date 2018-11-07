@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.base.mapper.CacheMapper">
+
+	<select id="selectCodes" parameterType="java.util.List"
+		resultType="com.hansy.tyly.admin.dao.model.SysCodeInfo">
+		SELECT ci.CODE_INFO_VALUE, ci.CODE_INFO_NAME, if(ct.status =
+		'00001001', if(ci.status = '00001001', 1, 0), 0) status,
+		ct.CODE_TYPE_ID FROM sys_code_info ci
+		INNER JOIN sys_code_type ct ON ct.CODE_TYPE_ID = ci.CODE_TYPE_ID
+		WHERE ct.CODE_TYPE_ID IN
+		<foreach collection="codeTypes" item="item" separator=","
+			open="(" close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="selectAuthCodePerms" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT DISTINCT
+		M.AUTH_CODE
+		FROM
+		SYS_MENU M
+		INNER JOIN SYS_R_ROLE_MENU RM ON RM.MENU_ID = M.MENU_ID
+		INNER JOIN SYS_R_USER_ROLE UR ON UR.ROLE_ID = RM.ROLE_ID
+		INNER JOIN SYS_USER U ON U.USER_ID = UR.USER_ID
+		WHERE M.AUTH_CODE IS NOT NULL
+		AND U.LOGIN_ID = #{loginNo}
+		AND U.`STATUS` = '00001001'
+		AND U.USER_TYPE = '10003002'
+		AND UR.`STATUS` = '00001001'
+		AND RM.`STATUS` = '00001001'
+	</select>
+
+	<select id="selectResources" resultType="com.hansy.tyly.admin.dao.model.SysMenu">
+		SELECT DISTINCT
+		M.MENU_ID, M.AUTH_CODE, M.MENU_NAME, M.MENU_ICON, M.PARENT_MENU_ID,
+		M.ACTION_TYPE,M.MENU_ORDER
+		FROM
+		SYS_MENU M
+		INNER JOIN SYS_R_ROLE_MENU RM ON RM.MENU_ID = M.MENU_ID
+		INNER JOIN SYS_R_USER_ROLE UR ON UR.ROLE_ID = RM.ROLE_ID
+		INNER JOIN SYS_USER U ON U.USER_ID = UR.USER_ID
+		WHERE
+		M.MENU_ID IS NOT NULL
+		AND U.LOGIN_ID = #{loginNo}
+		AND U.`STATUS` = '00001001'
+		AND U.USER_TYPE = '10003002'
+		AND UR.`STATUS` = '00001001'
+		AND RM.`STATUS` = '00001001' ORDER BY M.MENU_ORDER
+	</select>
+
+</mapper>

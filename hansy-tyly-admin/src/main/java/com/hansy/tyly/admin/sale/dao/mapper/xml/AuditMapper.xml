@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hansy.tyly.admin.sale.dao.mapper.AuditMapper">
+
+	<sql id="info_search_where">
+		<if test="status != null">
+			AND (status = #{status})
+		</if>
+		<if test="staffNo != null">
+			AND (staff_no = #{staffNo})
+		</if>
+	</sql>
+	<select id="getAudits" resultType="java.util.Map">
+		SELECT * FROM (SELECT
+		D.DISTRIBUTOR_NAME AS NAME,
+		D.DISTRIBUTOR_ADDRE AS ADDRE,
+		D.DISTRIBUTOR_NO AS NO,
+		D.COMPANY_TYPE AS COMPANY_TYPE,
+		D.DISTRIBUTOR_CONTACT AS CONTACT,
+		D.DISTRIBUTOR_CONTACT_PHONE AS CONTACT_PHONE,
+		D.DISTRIBUTOR_REG_NO AS REG_NO,
+		D.DISTRIBUTOR_STATUS AS STATUS,
+		D.INSERT_DATE AS INSERT_DATE,
+		D.LEGAL_NAME AS LEGAL_NAME,
+		D.UPDATE_DATE AS UPDATE_DATE,
+		D.STAFF_NO AS STAFF_NO,
+		'D' AS TYPE
+		FROM T_PUB_DISTRIBUTOR_INFO D
+		UNION ALL
+		SELECT M.MER_NAME AS NAME,
+		M.MER_ADDRE AS ADDRE,
+		M.MER_NO AS NO,
+		M.COMPANY_TYPE AS COMPANY_TYPE,
+		M.MER_CONTACT AS CONTACT,
+		M.MER_CONTACT_PHONE AS CONTACT_PHONE,
+		M.MER_REG_NO AS REG_NO,
+		M.MER_STATUS AS STATUS,
+		M.INSERT_DATE AS INSERT_DATE,
+		M.LEGAL_NAME AS LEGAL_NAME,
+		M.UPDATE_DATE AS UPDATE_DATE,
+		M.STAFF_NO AS STAFF_NO,
+		'M' AS TYPE
+		FROM T_PUB_MER_INFO M)A
+		<where>
+			<include refid="info_search_where" />
+		</where>
+		order by INSERT_DATE DESC
+	</select>
+
+</mapper>

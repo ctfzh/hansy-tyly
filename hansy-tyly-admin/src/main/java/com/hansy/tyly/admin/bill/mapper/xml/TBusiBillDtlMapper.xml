@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.bill.mapper.TBusiBillDtlMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiBillDtl">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="BILL_DTL_ID" jdbcType="VARCHAR" property="billDtlId" />
+    <result column="BILL_ID" jdbcType="VARCHAR" property="billId" />
+    <result column="INDT_ID" jdbcType="VARCHAR" property="indcId" />
+    <result column="INDT_VALUE" jdbcType="VARCHAR" property="indcValue" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    BILL_DTL_ID, BILL_ID, INDT_ID, INDT_VALUE, `STATUS`, INSERT_TIME, INSERT_USER_ID, 
+    UPDATE_TIME
+  </sql>
+</mapper>

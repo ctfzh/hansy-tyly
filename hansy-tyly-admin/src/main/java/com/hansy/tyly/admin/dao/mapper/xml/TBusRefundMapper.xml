@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TBusRefundMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusRefund">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="refund_no" jdbcType="INTEGER" property="refundNo" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="goods_num" jdbcType="INTEGER" property="goodsNum" />
+    <result column="refund_amt" jdbcType="DECIMAL" property="refundAmt" />
+    <result column="refund_reason" jdbcType="VARCHAR" property="refundReason" />
+    <result column="apply_date" jdbcType="TIMESTAMP" property="applyDate" />
+    <result column="appr_status" jdbcType="VARCHAR" property="apprStatus" />
+    <result column="appr_date" jdbcType="TIMESTAMP" property="apprDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    ref.refund_no,  ref.order_no,  ref.goods_no,  ref.goods_num,  ref.refund_amt,  ref.refund_reason,  ref.apply_date,
+    ref.appr_status,  ref.appr_date
+  </sql>
+
+  <select id="getGoodsNumByOrderNo" resultMap="BaseResultMap">
+
+    select *
+    from t_bus_refund
+    where order_no=#{orderNo}
+    and appr_status in ('10027001','10027002')
+  </select>
+
+</mapper>

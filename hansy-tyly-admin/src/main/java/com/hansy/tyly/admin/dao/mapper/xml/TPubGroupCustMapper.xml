@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TPubGroupCustMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TPubGroupCust">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="VARCHAR" property="tableKey" />
+    <result column="group_no" jdbcType="VARCHAR" property="groupNo" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="cust_no" jdbcType="VARCHAR" property="custNo" />
+    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    table_key, group_no, group_name, cust_no, cust_name, insert_date, distributor_no
+  </sql>
+</mapper>

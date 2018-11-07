@@ -1,0 +1,43 @@
+ # 生产环境(prod)
+
+server:
+  port: 6012
+  contextPath: /
+  tomcat:
+      protocol-header: x-forwarded-proto
+      remote-ip-header: x-forwarded-for
+
+spring:
+  # 数据库连接
+#  datasource:
+#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://rm-m5ej43sv394jnf7x0o.mysql.rds.aliyuncs.com:3306/watchdog-proddb?useUnicode=true&amp;characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+#    username: watchdog
+#    password: 1ls2Ningmeng
+#    initialSize: 20
+#    minIdle: 20
+#    maxActive: 100
+  # 生产数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-wz9yt1cabi64vmxh7ho.mysql.rds.aliyuncs.com:3306/watchdog-proddb?useUnicode=true&amp;characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+    username: prodwatchdogdb
+    password: 1ls2Ningmeng
+    initialSize: 20
+    minIdle: 20
+    maxActive: 100
+
+#测试
+#oss:
+#  endpoint: http://oss-cn-shenzhen.aliyuncs.com
+#  accessKeyId: LTAIfjOky9LVcF0Q
+#  accessKeySecret: yQAVwnGcdS7zWAV2rNOeif3lo32mTa
+#  bucketName: watchdogdev
+  
+#生产
+oss:
+  endpoint: https://oss-cn-shenzhen.aliyuncs.com
+  accessKeyId: LTAIHB2HXFin05jp
+  accessKeySecret: 7YWi3rWyUP1iANKnBo89RmAOKV27s7
+  bucketName: watchdogprod
+

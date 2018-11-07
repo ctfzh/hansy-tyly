@@ -1,0 +1,10 @@
+# test(测试环境)
+
+spring:
+
+  # 数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-m5ej43sv394jnf7x0o.mysql.rds.aliyuncs.com:3306/watchdog-testdb?useUnicode=true&amp;characterEncoding=utf-8&useSSL=false
+    username: watchdog
+    password: 1ls2Ningmeng

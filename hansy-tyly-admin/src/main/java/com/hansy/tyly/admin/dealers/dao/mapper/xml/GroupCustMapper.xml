@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dealers.dao.mapper.GroupCustMapper">
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dealers.dao.model.GroupCust">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="table_key" jdbcType="VARCHAR" property="tableKey"/>
+        <result column="group_no" jdbcType="VARCHAR" property="groupNo"/>
+        <result column="group_name" jdbcType="VARCHAR" property="groupName"/>
+        <result column="cust_no" jdbcType="VARCHAR" property="custNo"/>
+        <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        table_key, group_no, group_name, cust_no, insert_date
+    </sql>
+    <select id="selectByGroupNoAndCustNo" resultType="com.hansy.tyly.admin.dealers.dao.model.GroupCust">
+        SELECT * FROM t_pub_group_cust WHERE group_no = #{groupNo} AND cust_no = #{custNo}
+    </select>
+    <select id="listByGroupNo" resultType="com.hansy.tyly.admin.dealers.dao.model.GroupCust">
+        SELECT * FROM t_pub_group_cust
+        WHERE group_no = #{groupNo}
+    </select>
+    <delete id="deleteByGroupNoAndCustNo">
+        DELETE FROM t_pub_group_cust WHERE group_no = #{groupNo} AND cust_no = #{custNo}
+    </delete>
+</mapper>

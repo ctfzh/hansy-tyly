@@ -1,0 +1,9 @@
+# dev(开发环境)
+
+spring:
+  # 数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.0.199:3306/TYSCM?useUnicode=true&amp;characterEncoding=utf-8&useSSL=false&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 123456

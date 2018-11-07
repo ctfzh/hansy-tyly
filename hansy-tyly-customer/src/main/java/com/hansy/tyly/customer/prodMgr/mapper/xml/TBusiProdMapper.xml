@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.prodMgr.mapper.TBusiProdMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.customer.prodMgr.model.TBusiProd">
+		<!-- WARNING - @mbg.generated -->
+		<id column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+		<result column="PROD_NAME" jdbcType="VARCHAR" property="prodName" />
+		<result column="PROD_TYPE" jdbcType="VARCHAR" property="prodType" />
+		<result column="PROD_REMARK" jdbcType="VARCHAR" property="prodRemark" />
+		<result column="COST_TYPE" jdbcType="VARCHAR" property="costType" />
+		<result column="COST_AMT" jdbcType="DECIMAL" property="costAmt" />
+		<result column="MNG_TYPE" jdbcType="VARCHAR" property="mngType" />
+		<result column="RULE_ID" jdbcType="VARCHAR" property="ruleId" />
+		<result column="INTER_ADDR1" jdbcType="VARCHAR" property="interAddr1" />
+		<result column="INTER_ADDR2" jdbcType="VARCHAR" property="interAddr2" />
+		<result column="INTER_ADDR3" jdbcType="VARCHAR" property="interAddr3" />
+		<result column="STATUS" jdbcType="VARCHAR" property="status" />
+		<result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		PROD_ID, PROD_NAME, PROD_TYPE, PROD_REMARK, COST_TYPE, COST_AMT,
+		MNG_TYPE, RULE_ID,
+		INTER_ADDR1, INTER_ADDR2, INTER_ADDR3, `STATUS`, INSERT_TIME, INSERT_USER_ID,
+		UPDATE_TIME
+	</sql>
+</mapper>

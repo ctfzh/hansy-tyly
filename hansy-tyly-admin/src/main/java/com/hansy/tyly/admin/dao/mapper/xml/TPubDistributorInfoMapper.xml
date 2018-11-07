@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TPubDistributorInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TPubDistributorInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="distributor_name" jdbcType="VARCHAR" property="distributorName" />
+    <result column="legal_name" jdbcType="VARCHAR" property="legalName" />
+    <result column="distributor_reg_no" jdbcType="VARCHAR" property="distributorRegNo" />
+    <result column="company_type" jdbcType="VARCHAR" property="companyType" />
+    <result column="distributor_addre" jdbcType="VARCHAR" property="distributorAddre" />
+    <result column="distributor_contact" jdbcType="VARCHAR" property="distributorContact" />
+    <result column="distributor_contact_phone" jdbcType="VARCHAR" property="distributorContactPhone" />
+    <result column="distributor_status" jdbcType="VARCHAR" property="distributorStatus" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    distributor_no, distributor_name, legal_name, distributor_reg_no, company_type, distributor_addre, 
+    distributor_contact, distributor_contact_phone, distributor_status, insert_date, 
+    update_date, staff_no
+  </sql>
+
+</mapper>

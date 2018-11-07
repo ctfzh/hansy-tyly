@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hansy.tyly.admin.system.mapper.SysCodeInfoMapper">
+    <update id="updateStatusById">
+        UPDATE sys_code_info set STATUS=#{status},UPDATE_TIME=now() where CODE_INFO_VALUE=#{id}
+    </update>
+    <delete id="deletCodeInfoByIds">
+        delete from sys_code_info where CODE_INFO_ID in
+        <foreach item="codeId" collection="array" open="(" separator="," close=")">
+            #{codeId}
+        </foreach>
+    </delete>
+    <select id="queryCodeInfo" resultType="com.hansy.tyly.admin.dao.model.SysCodeInfo">
+        select * from sys_code_info where CODE_TYPE_ID = #{codeTypeId}
+    </select>
+    <select id="queryCodeInfoByTypeId" resultType="java.lang.Integer">
+        select COUNT(*) from sys_code_info where CODE_TYPE_ID=#{id} and STATUS = #{status}
+    </select>
+    <select id="getCodeNameByValue" resultType="java.lang.String">
+        select CODE_INFO_NAME  from sys_code_info where CODE_INFO_VALUE = #{code}
+    </select>
+
+</mapper>

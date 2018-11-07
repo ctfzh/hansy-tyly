@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.prodMgr.mapper.TROrgProdMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.customer.prodMgr.model.TROrgProd">
+		<id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+		<result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+		<result column="ORG_ID" jdbcType="VARCHAR" property="orgId" />
+		<result column="STATUS" jdbcType="VARCHAR" property="status" />
+		<result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		SYS_UUID, PROD_ID, ORG_ID, `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+	</sql>
+	<!-- 查询机构下有效的产品(风控包)信息列表 -->
+	<select id="queryProdsByOrgId" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		T5.*,(SELECT CODE_INFO_NAME FROM SYS_CODE_INFO WHERE CODE_INFO_VALUE=T5.MNG_TYPE)
+		AS RISK_LEVEL,IFNULL(T6.SALE_NUMS,0) AS SALE_NUMS
+		FROM(SELECT T2.*,
+		T3.PROD_LIB_PATH
+		FROM T_R_ORG_PROD T1,T_BUSI_PROD T2,T_BUSI_PROD_LIB T3
+		WHERE T1.PROD_ID = T2.PROD_ID
+		AND T1.ORG_ID = #{orgId}
+		AND T1. STATUS = '00001001'
+		AND T2. STATUS = '00001001'
+		AND T3.PROD_ID = T1.PROD_ID
+		AND T3. STATUS = '00001001') T5
+		LEFT JOIN (
+		SELECT T4.PROD_ID,COUNT(T4.PROD_ID) AS SALE_NUMS
+		FROM T_BUSI_CUST_PROD T4
+		GROUP BY T4.PROD_ID
+		) T6 ON T5.PROD_ID = T6.PROD_ID
+	</select>
+</mapper>

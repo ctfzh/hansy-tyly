@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.bill.mapper.TBusiBillMapper">
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiBill">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="BILL_ID" jdbcType="VARCHAR" property="billId"/>
+        <result column="ORG_ID" jdbcType="VARCHAR" property="orgId"/>
+        <result column="CUST_ID" jdbcType="VARCHAR" property="custId"/>
+        <result column="PROD_ID" jdbcType="VARCHAR" property="prodId"/>
+        <result column="BILL_TYPE" jdbcType="VARCHAR" property="billType"/>
+        <result column="BUSI_DATE" jdbcType="VARCHAR" property="busiDate"/>
+        <result column="DC_TYPE" jdbcType="VARCHAR" property="dcType"/>
+        <result column="BILL_AMT" jdbcType="DECIMAL" property="billAmt"/>
+        <result column="STATUS" jdbcType="VARCHAR" property="status"/>
+        <result column="INSERT_TIME" jdbcType="DATE" property="insertTime"/>
+        <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId"/>
+        <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        BILL_ID, ORG_ID, CUST_ID, PROD_ID, BILL_TYPE, BUSI_DATE, DC_TYPE, BILL_AMT, `STATUS`,
+        INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+    </sql>
+    <select id="getListByCondit" resultType="java.util.Map">
+        SELECT
+        a.BILL_ID,
+        b.ORG_TEL,
+        b.ORG_NAME,
+        a.BILL_AMT,
+        a.INSERT_TIME,
+        a.`STATUS`,
+        b.ORG_ID,
+        a.BILL_TYPE
+        FROM
+        t_busi_bill_his a LEFT JOIN
+        t_busi_org b on a.ORG_ID = b.ORG_ID
+        WHERE
+          a.BILL_TYPE IN ('10009001', '10009002')
+        <if test="orgName != null and orgName != ''">
+            AND b.ORG_NAME LIKE concat(concat('%',#{orgName}),'%')
+        </if>
+        <if test="orgTel != null and orgTel != ''">
+            AND b.ORG_TEL LIKE concat(concat('%',#{orgTel}),'%')
+        </if>
+        <if test="status != null and status != ''">
+            AND a.`STATUS` LIKE concat(concat('%',#{status}),'%')
+        </if>
+        <if test="insertTime != null and insertTime != ''">
+            <![CDATA[AND DATE_FORMAT(a.insert_time,'%Y-%m-%d') = DATE_FORMAT(#{insertTime},'%Y-%m-%d')]]>
+        </if>
+        order by a.INSERT_TIME desc
+    </select>
+    <select id="queryBillDtl" resultType="java.util.Map">
+        SELECT
+            b.ORG_NAME,
+            f.USER_NAME,
+            c.CUST_NAME,
+            a.BUSI_DATE,
+            d.PROD_NAME,
+            a.BILL_AMT,
+            e.FRE_NUM,
+            e.FRE_TYPE,
+            e.`STATUS`,
+            c.MNG_STATUS
+        FROM
+          t_busi_bill_his a
+        LEFT JOIN t_busi_org b ON a.ORG_ID = b.ORG_ID
+        LEFT JOIN t_busi_cust c ON a.CUST_ID = c.CUST_ID
+        LEFT JOIN t_busi_prod d ON a.PROD_ID = d.PROD_ID
+        LEFT JOIN t_busi_cust_prod e ON  a.CUST_ID =e.CUST_ID
+        LEFT JOIN sys_user f ON c.USER_ID = f.USER_ID
+        WHERE
+            a.PROD_ID=e.PROD_ID and
+            a.BILL_TYPE = '10009003' and
+			e.STATUS = '00001001'
+        <if test="orgName != null and orgName != ''">
+            AND b.ORG_NAME LIKE concat(concat('%',#{orgName}),'%')
+        </if>
+        <if test="busiDate != null and busiDate != ''">
+            <![CDATA[AND DATE_FORMAT(a.BUSI_DATE,'%Y-%m-%d') = str_to_date(#{busiDate},'%Y-%m-%d')]]>
+        </if>
+        ORDER BY a.INSERT_TIME DESC
+    </select>
+</mapper>

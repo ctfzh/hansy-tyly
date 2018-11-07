@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.SysMenu">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+    <result column="MENU_URL" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="MENU_TYPE" jdbcType="VARCHAR" property="menuType" />
+    <result column="MENU_ICON" jdbcType="VARCHAR" property="menuIcon" />
+    <result column="PARENT_MENU_ID" jdbcType="VARCHAR" property="parentMenuId" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="MENU_ORDER" jdbcType="INTEGER" property="menuOrder" />
+    <result column="AUTH_CODE" jdbcType="VARCHAR" property="authCode" />
+    <result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    MENU_ID, MENU_NAME, MENU_URL, MENU_TYPE, MENU_ICON, PARENT_MENU_ID, `STATUS`, MENU_ORDER, 
+    AUTH_CODE, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+</mapper>

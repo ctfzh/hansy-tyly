@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper">
+	<select id="proctScBill" statementType="CALLABLE" resultType="java.util.Map" parameterType="java.util.Map">
+		<![CDATA[
+		    {call PROC_T_SC_BILL(#{I_DATE,mode=IN,jdbcType=VARCHAR},#{O_STAT,mode=OUT,jdbcType=VARCHAR})}
+		 ]]>
+	</select>
+	<!-- 查询系统参数 -->
+	<select id="queryParam" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT T1.PARA_VALUE AS paramValue FROM SYS_PARAMETER T1 WHERE T1.PARA_ID=#{paramId} AND T1.STATUS='00001001'
+	</select>
+
+	<!-- 查询所有待提交A5的客户列表(防止同一天内的记录重复生成) -->
+	<select id="queryCustList" resultType="com.lemoncome.watchdog.riskbatch.model.CustBill" parameterType="java.util.Map">
+		SELECT T4.CUST_ID,T4.PROD_ID
+		FROM
+			(SELECT T1.CUST_ID,T1.PROD_ID,
+					T3.CUST_ID AS EXIST_FALG
+				FROM T_SC_CUST_LST T1
+				LEFT JOIN (
+					SELECT
+						T2.CUST_ID,
+						T2.PROD_ID
+					FROM
+						T_SC_CUST_BILL T2
+					WHERE
+						DATE_FORMAT(T2.INSERT_TIME, '%Y-%m-%d') = DATE_FORMAT(SYSDATE(), '%Y-%m-%d')
+				) AS T3 ON T1.CUST_ID = T3.CUST_ID
+				AND T1.PROD_ID = T3.PROD_ID
+			) T4
+		WHERE
+			T4.EXIST_FALG IS NULL
+		<if test="batchNo != null and batchNo !=''">
+			AND  RIGHT(T4.CUST_ID,1) in (#{batchNo})
+		</if>
+	</select>
+	
+	<!-- 清空CustBill表信息 -->
+	<delete id="deleteCustBill" parameterType="java.util.Map">
+		DELETE FROM T_SC_CUST_BILL
+		<if test="batchNo != null and batchNo !=''">
+			where  RIGHT(CUST_ID,1) in (#{batchNo})
+		</if>
+	</delete>
+
+	<!-- 批量插入待提交A5的客户信息列表 SCHEDULE_STATUS 为null -->
+ 	<insert id="insertCustBill" parameterType="java.util.List">
+		INSERT INTO T_SC_CUST_BILL (
+			BILL_ID,
+			CUST_ID,
+			PROD_ID,
+			SCHEDULE_STATUS,
+			INSERT_TIME,
+			INSERT_USER_ID
+		)
+		VALUES
+		 <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.billId}, #{item.custId},#{item.prodId},
+            null,#{item.insertTime},'SYSTEM')
+        </foreach>
+	</insert>
+	
+	<!-- 全量读取待提交A5记录(含客户三要素、地址、规则链等信息) -->
+	<select id="queryCustBillList" resultType="com.lemoncome.watchdog.riskbatch.model.BdDataModel" parameterType="java.util.Map">
+		SELECT
+			T3.CUST_NAME AS NAME,
+			T3.CUST_CERT_NO AS ID_CARD,
+			T3.CUST_TEL AS MOBLIE_PHONE,
+			T3.LOAN_AMT,
+			T1.BILL_ID AS ORDER_ID,
+			CASE
+			WHEN T2.COST_AMT > 0 THEN
+				'NO'
+			ELSE
+				'YES'
+			END AS IS_FREE,
+			T2.RULE_ID,
+			T2.SCORE_ID,
+			T2.INTER_ADDR1 AS REQUST_URL
+		FROM
+			T_SC_CUST_BILL T1,
+			T_BUSI_PROD T2,
+			T_BUSI_CUST T3
+		WHERE
+			T1.PROD_ID = T2.PROD_ID
+		AND T1.CUST_ID = T3.CUST_ID
+		AND T1.SCHEDULE_STATUS IS NULL
+		<if test="batchNo != null and batchNo !=''">
+			AND  RIGHT(T1.CUST_ID,1) in (#{batchNo})
+		</if>
+	</select>
+	
+	<!-- 更新客户接口跑批状态 -->
+	<update id="updateCustBill" parameterType="java.util.Map">
+		UPDATE T_SC_CUST_BILL T1 SET T1.SCHEDULE_STATUS = #{exeStatus} WHERE T1.BILL_ID = #{billId}
+	</update>
+	
+	<!-- 批量插入单条记录接口执行日志 -->
+	<insert id="insertScIntLog" parameterType="java.util.List">
+		INSERT INTO T_SC_INT_LOG (
+			SYS_UUID,
+			BILL_ID,
+			INT_TYPE,
+			LOG_STATE,
+			ERROR_REASON,
+			INSERT_TIME,
+			INSERT_USER_ID
+		)
+		VALUES
+		<foreach collection="logList" item="item" index="index" separator=",">
+            (#{item.sysUuid}, #{item.billId},#{item.intType},
+            #{item.logState},#{item.errorReason},#{item.insertTime},'SYSTEM')
+        </foreach>
+	</insert>
+	
+	<!-- 全量读取待查询A7记录(billId、地址信息) -->
+	<select id="queryCustBillListForA7" resultType="com.lemoncome.watchdog.riskbatch.model.BdDataModel">
+		SELECT
+			T1.BILL_ID AS ORDER_ID,
+			CASE
+			WHEN T2.COST_AMT > 0 THEN
+				'NO'
+			ELSE
+				'YES'
+			END AS IS_FREE,
+			T2.INTER_ADDR2 AS REQUST_URL
+		FROM
+			T_SC_CUST_BILL T1,
+			T_BUSI_PROD T2
+		WHERE
+			T1.PROD_ID = T2.PROD_ID
+		AND T1.SCHEDULE_STATUS='10016001'
+	</select>
+
+	<!-- 批量插入A7决策结果记录 -->
+	<insert id="insertDscRstInfo" parameterType="java.util.List">
+		INSERT INTO T_SC_CUST_DCS_RST (
+			BILL_ID,
+			DCS_RST,
+			SCORE,
+			INSERT_TIME,
+			INSERT_USER_ID
+		)
+		VALUES
+		<foreach collection="dscRstInfo" item="item" index="index" separator=",">
+            (#{item.billId}, #{item.dcsRst},#{item.score},#{item.insertTime},'SYSTEM')
+        </foreach>
+	</insert>
+	
+	<!-- 待发送短信信息读取(未发送或发送失败) -->
+	<select id="querySmsMessageList" parameterType="java.lang.String" resultType="com.lemoncome.watchdog.riskbatch.model.SmsMessage">
+		SELECT L5.*, FORMAT((IFNULL(L4.MAX_AMT, 0)*0.1),2) AS OVER_DRAFT_AMT
+			FROM(SELECT T1.SYS_UUID,T1.MSG_CFG_ID,T1.USER_TEL,T1.ORG_ID,T2.ORG_NAME,
+						FORMAT(T2.BAL, 2) AS ACC_AMT,T3.CONTENT AS MSG_CONTENT
+					FROM T_BUSI_MSG T1,T_BUSI_ORG T2,T_BUSI_MSG_CFG T3
+					WHERE
+						T1.BUSI_DATE = #{busiDate}
+					AND T1.ORG_ID = T2.ORG_ID
+					AND T1.MSG_CFG_ID = T3.MSG_CFG_ID
+					AND (T1.STATUS IS NULL OR T1.STATUS = '10019002')) L5
+			LEFT JOIN (
+				SELECT L3.ORG_ID,MAX(L3.BILL_AMT) AS MAX_AMT
+				FROM(SELECT L2.ORG_ID,L2.BILL_AMT
+						FROM T_BUSI_BILL_HIS L2,(
+								SELECT L1.ORG_ID,MAX(L1.INSERT_TIME) AS INSERT_TIME
+								FROM T_BUSI_BILL_HIS L1
+								WHERE L1.BILL_TYPE = '10009001'
+								GROUP BY L1.ORG_ID) L3
+						WHERE
+							L2.ORG_ID = L3.ORG_ID AND L2.INSERT_TIME = L3.INSERT_TIME
+					) L3 GROUP BY L3.ORG_ID
+			) L4 ON L5.ORG_ID = L4.ORG_ID
+	</select>
+	
+	<!-- 短信发送结果更新 -->
+	<update id="updateSmsMessageInfo" parameterType="java.util.Map">
+		UPDATE T_BUSI_MSG T1 SET T1.STATUS = #{status},T1.UPDATE_TIME = #{updtTime} WHERE T1.SYS_UUID = #{sysUuid}
+	</update>
+</mapper>

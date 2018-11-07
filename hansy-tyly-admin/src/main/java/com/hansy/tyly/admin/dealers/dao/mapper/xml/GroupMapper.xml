@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dealers.dao.mapper.GroupMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dealers.dao.model.Group">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="group_no" jdbcType="VARCHAR" property="groupNo" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="create_type" jdbcType="VARCHAR" property="createType" />
+    <result column="create_no" jdbcType="CHAR" property="createNo" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="group_status" jdbcType="VARCHAR" property="groupStatus" />
+    <collection property="groupCusts" ofType="com.hansy.tyly.admin.dealers.dao.model.GroupCust">
+      <id column="table_key" jdbcType="VARCHAR" property="tableKey"/>
+      <result column="c_group_no" jdbcType="VARCHAR" property="groupNo"/>
+      <result column="c_group_name" jdbcType="VARCHAR" property="groupName"/>
+      <result column="cust_no" jdbcType="VARCHAR" property="custNo"/>
+      <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate"/>
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    group_no, group_name, create_type, create_no, create_date, group_status
+  </sql>
+  <select id="listByCreateNo" resultMap="com.hansy.tyly.admin.dealers.dao.mapper.GroupMapper.BaseResultMap">
+    SELECT g.*,
+      gc.table_key, gc.group_no c_group_no, gc.group_name c_group_name,gc.cust_no ,gc.insert_date
+    FROM t_pub_group g
+    INNER JOIN sys_user u ON g.create_no = u.USER_ID AND u.LOGIN_ID = #{loginId}
+    LEFT JOIN t_pub_group_cust gc ON g.group_no = gc.group_no
+    WHERE g.group_status = #{status} And g.group_type = #{groupType}
+  </select>
+  <select id="selectByNameAndLoginId" resultType="com.hansy.tyly.admin.dealers.dao.model.Group">
+    SELECT g.* FROM t_pub_group g
+    INNER JOIN sys_user u ON g.create_no = u.USER_ID AND u.LOGIN_ID = #{loginId}
+    WHERE g.group_name = #{groupName} AND g.group_status = '00001001' And g.group_type = #{groupType}
+  </select>
+</mapper>

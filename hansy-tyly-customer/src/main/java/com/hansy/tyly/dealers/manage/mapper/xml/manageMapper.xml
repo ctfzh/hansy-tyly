@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.manage.mapper.ManageMapper">
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.manage.domain.TPubMerInfo">
+        <id column="mer_no" jdbcType="VARCHAR" property="merNo"/>
+        <result column="mer_name" jdbcType="VARCHAR" property="merName"/>
+        <result column="legal_name" jdbcType="VARCHAR" property="legalName"/>
+        <result column="mer_reg_no" jdbcType="VARCHAR" property="merRegNo"/>
+        <result column="company_type" jdbcType="VARCHAR" property="companyType"/>
+        <result column="mer_addre" jdbcType="VARCHAR" property="merAddre"/>
+        <result column="mer_contact" jdbcType="VARCHAR" property="merContact"/>
+        <result column="mer_contact_phone" jdbcType="VARCHAR" property="merContactPhone"/>
+        <result column="mer_status" jdbcType="VARCHAR" property="merStatus"/>
+        <result column="staff_no" jdbcType="VARCHAR" property="staffNo"/>
+        <result column="insert_date" jdbcType="DATE" property="insertUserId"/>
+        <result column="update_date" jdbcType="DATE" property="updateTime"/>
+        <result column="distributor_contact" jdbcType="VARCHAR" property="distributorContact"/>
+        <result column="distributor_contact_phone" jdbcType="VARCHAR" property="distributorContactPhone"/>
+    </resultMap>
+
+    <select id="getAllMerchantsByDealer" parameterType="java.util.Map"  resultType="java.util.Map">
+        select distinct
+         a.mer_no,
+         a.mer_name,
+         a.legal_name,
+         a.mer_reg_no,
+         a.company_type,
+         a.mer_addre,
+         a.mer_contact,
+         a.mer_contact_phone,
+         a.mer_status,
+         a.staff_no,
+         a.insert_date,
+         a.update_date,
+         b.USER_NAME as sale_name,
+         b.USER_TEL as sale_tel,
+         d.distributor_name,
+         d.legal_name as distributor_legal_name,
+         d.distributor_reg_no,
+         d.company_type as distributor_company_type,
+         d.distributor_contact,
+         d.distributor_addre,
+         d.distributor_contact_phone
+        from
+          t_pub_mer_info a
+        left join
+          sys_user b
+        on
+          a.staff_no=b.user_id
+       left join
+        t_pub_distributor_mer c
+       on
+        c.mer_no=a.mer_no
+       left join
+         t_pub_distributor_info d
+       on
+        d.distributor_no=c.distributor_no
+        where
+          b.login_id=#{loginId}
+        and
+          a.mer_status = #{useStatus}
+    </select>
+    <select id="getAllMerchants"   resultType="java.util.Map">
+        select distinct
+         a.mer_no,
+         a.mer_name,
+         a.legal_name,
+         a.mer_reg_no,
+         a.company_type,
+         a.mer_addre,
+         a.mer_contact,
+         a.mer_contact_phone,
+         a.insert_date,
+         a.mer_status,
+         a.staff_no,
+         b.USER_NAME as sale_name,
+         b.USER_TEL as sale_tel,
+         d.distributor_name,
+         d.legal_name as distributor_legal_name,
+         d.distributor_reg_no,
+         d.company_type as distributor_company_type,
+         d.distributor_contact,
+         d.distributor_addre,
+         d.distributor_contact_phone,
+         c.distributor_no
+         from
+          t_pub_mer_info a
+          left join
+            sys_user b
+          on
+           a.staff_no=b.user_id
+          left join
+           t_pub_distributor_mer c
+          on
+           c.mer_no=a.mer_no
+          left join
+            t_pub_distributor_info d
+          on
+           d.distributor_no=c.distributor_no
+          where
+            c.distributor_no=#{distributor_no}
+          and
+            a.mer_status = #{useStatus}
+    </select>
+    <select id="getMerchantDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct
+        a.mer_no,
+        a.mer_name,
+        a.legal_name,
+        a.mer_reg_no,
+        a.company_type,
+        a.mer_addre,
+        a.mer_contact,
+        a.mer_contact_phone,
+        a.insert_date,
+        a.mer_status,
+        a.staff_no
+        from
+        t_pub_mer_info a
+        where
+          a.mer_no=#{mer_no}
+    </select>
+    <select id="selectTotalAmount" resultType="java.lang.Double">
+        select
+        sum(a.total_amt) as total_amt
+        from
+        t_bus_order a
+        where
+        a.trans_status in
+        <foreach collection="arg1" separator="," close=")" open="(" item="item" index="index">
+            #{item}
+        </foreach>
+        and
+          a.buy_person=#{arg0}
+        and
+          a.sell_person = #{arg2}
+
+    </select>
+    <select id="getAgreementGoodsDetail" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+         a.goods_no,
+         a.distributor_no,
+         a.mer_no,
+         a.goods_amt,
+         a.on_date,
+         a.down_date,
+         a.on_status,
+         b.goods_name,
+         c.distributor_name
+--          e.file_path
+--          sum(d.goods_num) as total_count
+        from
+          t_goods_distributor_mer a
+        left join
+          t_goods_base_info b
+        on
+          a.goods_no=b.goods_no
+        left join
+          t_pub_distributor_info c
+        on
+          a.distributor_no=c.distributor_no
+--         left join
+--           t_bus_order_detail d
+--         on
+--           d.goods_no = a.goods_no
+--         left join
+--           t_goods_files e
+--         on
+--           e.goods_no = b.goods_no
+        where
+          a.mer_no=#{merNo}
+        and
+          a.on_status=#{goodsStatus}
+    </select>
+    <update id="modifyMerchants" >
+        update
+          t_pub_distributor_mer a
+        set
+          a.distributor_no = #{arg1},
+          a.update_date = #{arg2}
+        where
+          a.mer_no
+        in
+          <foreach collection="arg0" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+          </foreach>
+    </update>
+    <update id="freezeMerchant">
+        update
+          t_user_base_info a
+        set
+          a.user_status=#{arg1}
+        where
+          a.user_no=#{arg0}
+    </update>
+    <update id="stopSupply">
+        update
+          t_pub_mer_supplier a
+        set
+          a.supply_status=#{supply_status},
+          a.update_date=#{update_date}
+        where
+          a.distributor_no=#{distributor_no}
+        and
+          a.goods_no=#{goods_no}
+    </update>
+    <insert id="pushStopSupplyMessage">
+        insert into
+          t_user_news(table_key,user_no,user_type,news_type,news_content,news_date,is_read)
+        values
+          <foreach collection="list" separator=","  item="item" index="index">
+              (#{item.tableKey},#{item.userNo},#{item.userType},#{item.newsType},#{item.newsContent},#{item.newsDate},#{item.isRead})
+          </foreach>
+    </insert>
+    <select id="selectUserNoByDistributorNo" resultType="String">
+        select
+          a.mer_no
+        from
+          t_pub_distributor_mer a
+        where
+          a.distributor_no = #{distributor_no}
+
+    </select>
+    <select id="searchMerchants" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct
+        a.mer_no,
+        a.mer_name,
+        a.legal_name,
+        a.mer_reg_no,
+        a.company_type,
+        a.mer_addre,
+        a.mer_contact,
+        a.mer_contact_phone,
+        a.mer_status,
+        a.staff_no,
+        b.USER_NAME as sale_name,
+        b.USER_TEL as sale_tel,
+        d.distributor_name,
+        d.legal_name as distributor_legal_name,
+        d.distributor_reg_no,
+        d.company_type as distributor_company_type,
+        d.distributor_contact,
+        d.distributor_addre,
+        d.distributor_contact_phone
+        from
+        t_pub_mer_info a
+        left join
+        sys_user b
+        on
+        a.staff_no=b.user_id
+        left join
+        t_pub_distributor_mer c
+        on
+        c.mer_no=a.mer_no
+        left join
+        t_pub_distributor_info d
+        on
+        d.distributor_no=c.distributor_no
+        <where>
+            <if test="mer_name != null">
+                a.mer_name like concat('%',#{mer_name},'%')
+            </if>
+            <if test="mer_status != null">
+                and a.mer_status=#{mer_status}
+            </if>
+            <if test="start_date != null">
+                and  a.update_date >= #{start_date}
+            </if>
+            <if test="end_date != null">
+                and #{end_date} >= a.update_date
+            </if>
+            <if test="useStatus != null">
+                and a.mer_status=#{useStatus}
+            </if>
+        </where>
+    </select>
+    <select id="searchMerchantsByNo" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct
+        a.mer_no,
+        a.mer_name,
+        a.legal_name,
+        a.mer_reg_no,
+        a.company_type,
+        a.mer_addre,
+        a.mer_contact,
+        a.mer_contact_phone,
+        a.update_date as insert_date,
+        a.mer_status,
+        a.staff_no,
+        b.USER_NAME as sale_name,
+        b.USER_TEL as sale_tel,
+        d.distributor_name,
+        d.legal_name as distributor_legal_name,
+        d.distributor_reg_no,
+        d.company_type as distributor_company_type,
+        d.distributor_contact,
+        d.distributor_addre,
+        d.distributor_contact_phone
+        from
+        t_pub_mer_info a
+        left join
+        sys_user b
+        on
+        b.USER_ID = a.staff_no
+        left join
+        t_pub_distributor_mer c
+        on
+        c.mer_no=a.mer_no
+        left join
+        t_pub_distributor_info d
+        on
+        d.distributor_no=c.distributor_no
+        <where>
+            c.distributor_no = #{distributor_no}
+            <if test="mer_name != null">
+                and a.mer_name like concat('%',#{mer_name},'%')
+            </if>
+            <if test="mer_status != null">
+                and a.mer_status=#{mer_status}
+            </if>
+            <!--<if test="start_date != null and end_date != null">-->
+                <!--and  a.update_date between #{start_date} and #{end_date}-->
+            <!--</if>-->
+            <if test="start_date != null">
+                and a.update_date >= #{start_date}
+            </if>
+            <if test="end_date != null">
+                and #{end_date} >= a.update_date
+            </if>
+            <if test="mer_no != null">
+                and a.mer_no = #{mer_no}
+            </if>
+            <if test="sale_name != null">
+                and b.USER_NAME like concat('%',#{sale_name},'%')
+            </if>
+        </where>
+    </select>
+    <select id="searchMerchantsBySaleAdmin" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct
+        a.mer_no,
+        a.mer_name,
+        a.legal_name,
+        a.mer_reg_no,
+        a.company_type,
+        a.mer_addre,
+        a.mer_contact,
+        a.mer_contact_phone,
+        a.mer_status,
+        a.staff_no,
+        b.USER_NAME as sale_name,
+        b.USER_TEL as sale_tel,
+        d.distributor_name,
+        d.legal_name as distributor_legal_name,
+        d.distributor_reg_no,
+        d.company_type as distributor_company_type,
+        d.distributor_contact,
+        d.distributor_addre,
+        d.distributor_contact_phone
+        from
+        t_pub_mer_info a
+        left join
+        sys_user b
+        on
+        a.staff_no=b.user_id
+        left join
+        t_pub_distributor_mer c
+        on
+        c.mer_no=a.mer_no
+        left join
+        t_pub_distributor_info d
+        on
+        d.distributor_no=c.distributor_no
+        <where>
+            <if test="userIds != null">
+                a.staff_no in
+                <foreach collection="userIds" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="mer_name != null">
+                and a.mer_name like concat('%',#{mer_name},'%')
+            </if>
+            <if test="mer_status != null">
+                and a.mer_status=#{mer_status}
+            </if>
+            <if test="start_date != null and ">
+                and  a.update_date >= #{start_date}
+            </if>
+            <if test="end_date != null">
+                and #{end_date} >= a.update_date
+            </if>
+            <if test="useStatus != null">
+                and a.mer_status=#{useStatus}
+            </if>
+        </where>
+    </select>
+    <select id="getMerchantsBySaleAdmin" parameterType="java.util.Map" resultType="java.util.Map">
+        select distinct
+        a.mer_no,
+        a.mer_name,
+        a.legal_name,
+        a.mer_reg_no,
+        a.company_type,
+        a.mer_addre,
+        a.mer_contact,
+        a.mer_contact_phone,
+        a.mer_status,
+        a.staff_no,
+        b.USER_NAME as sale_name,
+        b.USER_TEL as sale_tel,
+        d.distributor_name,
+        d.legal_name as distributor_legal_name,
+        d.distributor_reg_no,
+        d.company_type as distributor_company_type,
+        d.distributor_contact,
+        d.distributor_addre,
+        d.distributor_contact_phone
+        from
+        t_pub_mer_info a
+        left join
+        sys_user b
+        on
+        a.staff_no=b.user_id
+        left join
+        t_pub_distributor_mer c
+        on
+        c.mer_no=a.mer_no
+        left join
+        t_pub_distributor_info d
+        on
+        d.distributor_no=c.distributor_no
+        where
+        a.staff_no in
+        <foreach collection="userIds" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and
+          a.mer_status=#{useStatus}
+    </select>
+    <select id="selectAllSales" resultType="java.lang.String">
+      select
+        distinct a.USER_ID
+      from
+        sys_r_user_org a
+      where
+        a.ORG_ID in (select a.org_id from sys_r_user_org a left join sys_user b on a.user_id=b.user_id where b.login_id=#{loginId})
+    </select>
+    <select id="getGroupsByLoginId" resultType="java.util.Map">
+      select
+        b.group_no,
+        b.group_name
+      from
+        t_user_base_info a
+      left join
+        t_pub_group b
+      on
+--         a.relation_no=b.create_no
+        a.user_no=b.create_no
+      where
+        a.user_no=#{loginId}
+      and
+        a.user_status = #{userStatus}
+      and
+        b.group_status = #{groupStatus}
+      and
+        b.group_type =#{groupType}
+    </select>
+
+    <select id="getNoGroupedManchats" resultType="java.util.Map">
+        select
+          c.*
+        from
+          t_pub_distributor_mer a
+        inner join
+          t_user_base_info b
+        on
+          a.distributor_no=b.user_no
+        inner join
+          t_pub_mer_info c
+        on
+          c.mer_no = a.mer_no
+        <where>
+            a.distributor_no = #{loginId}
+            <if test="groupNos != null">
+              and a.mer_no not in(
+                select a.cust_no from t_pub_group_cust a where a.group_no in
+                <foreach collection="groupNos" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+                )
+
+
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select ifnull(sum(d.goods_num),0) from t_bus_order_detail d where d.goods_no=#{arg0}
+    </select>
+
+    <select id="getAllSales" resultType="java.util.Map">
+        select
+          a.user_name,
+          a.user_id
+        from
+          sys_user a
+        inner join
+          sys_r_user_role b
+        on
+          a.USER_ID = b.USER_ID
+        where
+          a.status=#{userStatus}
+        and
+          b.status=#{userStatus}
+        and
+          b.ROLE_ID = #{sales}
+    </select>
+</mapper>

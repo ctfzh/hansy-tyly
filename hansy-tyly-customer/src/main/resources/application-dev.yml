@@ -1,0 +1,19 @@
+ # 开发环境(dev)
+
+server:
+  port: 8080
+  contextPath: /
+  tomcat:
+      protocol-header: x-forwarded-proto
+      remote-ip-header: x-forwarded-for
+
+spring:
+  # 数据库连接
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:mysql://192.168.0.199:3306/TYSCM?useUnicode=true&characterEncoding=utf8
+#    username: root
+#    password: 123456
+    url: jdbc:mysql://rds7349m0p48u5q9182j.mysql.rds.aliyuncs.com/TYSCM?useUnicode=true&characterEncoding=utf8
+    username: tyscm
+    password: Tyscm123

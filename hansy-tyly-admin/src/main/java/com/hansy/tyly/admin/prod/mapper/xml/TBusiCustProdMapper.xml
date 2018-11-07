@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.prod.mapper.TBusiCustProdMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiCustProd">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="FRE_TYPE" jdbcType="VARCHAR" property="freType" />
+    <result column="FRE_NUM" jdbcType="INTEGER" property="freNum" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    SYS_UUID, CUST_ID, PROD_ID, FRE_TYPE, FRE_NUM, `STATUS`, INSERT_TIME, INSERT_USER_ID, 
+    UPDATE_TIME
+  </sql>
+  <select id="queryCustIdsByProdId" resultType="java.lang.String">
+    SELECT DISTINCT
+        CUST_ID
+    FROM
+        t_busi_cust_prod
+    WHERE
+        PROD_ID = #{prodId}
+    AND `STATUS` = '00001001'
+  </select>
+</mapper>

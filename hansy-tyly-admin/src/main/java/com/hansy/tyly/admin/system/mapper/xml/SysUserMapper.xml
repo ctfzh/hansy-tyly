@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.system.mapper.SysUserMapper">
+  <select id="queryUserRolesByUserId" resultType="com.hansy.tyly.admin.dao.model.SysRole">
+      SELECT
+          DISTINCT a.*
+      FROM
+          sys_role a,
+          sys_r_user_role b
+      WHERE
+          b.role_id = a.role_id
+      AND b.user_id = #{userId}
+      AND a.status = #{status}
+      AND a.role_type=#{roleType}
+  </select>
+  <select id="queryUserMenusByUserId" resultType="com.hansy.tyly.admin.dao.model.SysMenu">
+      SELECT
+          DISTINCT a.*
+      FROM
+          sys_r_user_role b,
+          sys_r_role_menu c,
+          sys_menu a
+      WHERE
+          c.role_id = b.role_id
+      AND a.menu_id = c.menu_id
+      AND b.user_id = #{userId}
+      AND a.status=#{status}
+      AND a.menu_type=#{menuType}
+  </select>
+    <select id="querySysUserByUserName" resultType="com.hansy.tyly.admin.dao.model.SysUser">
+        select * from sys_user a where a.LOGIN_ID=#{userName}
+    </select>
+    <select id="queryUsersAndRole" resultType="java.util.Map">
+        SELECT DISTINCT
+        a.*
+        FROM
+        sys_user a
+        left JOIN sys_r_user_role b ON a.USER_ID = b.USER_ID
+        left JOIN sys_role c ON b.ROLE_ID = c.ROLE_ID where 1=1
+        <if test="roleName != null and roleName != ''">
+            AND c.ROLE_NAME LIKE concat(concat('%',#{roleName}),'%')
+        </if>
+        <if test="userName != null and userName != ''">
+            AND a.USER_NAME LIKE concat(concat('%',#{userName}),'%')
+        </if>
+        <if test="loginId != null and loginId != ''">
+            AND a.LOGIN_ID LIKE concat(concat('%',#{loginId}),'%')
+        </if>
+        <if test="status != null and status != ''">
+            AND a.STATUS = #{status}
+        </if>
+        <if test="userType != null and userType != ''">
+            AND a.USER_TYPE = #{userType}
+        </if>
+        order by a.INSERT_TIME desc
+    </select>
+    <select id="queryRoleById" resultType="java.util.Map">
+        SELECT
+            group_concat(a.ROLE_NAME) role_Names,
+            group_concat(a.ROLE_ID) role_Ids,
+            b.login_time
+        FROM
+            sys_role a,
+            (
+                SELECT
+                    b.ROLE_ID,
+                    c.login_time
+                FROM
+                    sys_r_user_role b
+                LEFT JOIN (
+                    SELECT
+                        LOGIN_TIME,
+                        user_id from sys_login_log
+                    WHERE
+                        USER_ID = #{userId}
+                    ORDER BY
+                        LOGIN_TIME DESC
+                    LIMIT 1
+                            ) c ON b.user_id = c.USER_ID where b.USER_ID= #{userId}
+                            GROUP BY
+                                b.ROLE_ID
+            ) b
+                WHERE
+                    a.ROLE_ID = b.ROLE_ID
+    </select>
+    <select id="queryOrgById" resultType="java.util.Map">
+    	select o.* from sys_user u 
+    		LEFT JOIN sys_r_user_org uo on u.USER_ID=uo.USER_ID
+			LEFT JOIN sys_org o on uo.ORG_ID=o.ORG_ID 
+			WHERE u.USER_ID = #{userId}
+    </select>
+    
+    <select id="queryLastLogin" resultType="java.lang.Object">
+        SELECT
+            LOGIN_TIME
+        FROM
+            sys_login_log
+        WHERE
+            USER_ID = #{userId}
+        ORDER BY
+            LOGIN_TIME DESC
+        LIMIT 1
+    </select>
+    <select id="queryRoleIds" resultType="java.lang.String">
+        SELECT
+            group_concat(a.ROLE_ID) roleName
+        FROM
+            sys_role a
+        WHERE
+            a.role_id IN (
+                SELECT
+                    b.ROLE_ID
+                FROM
+                    sys_r_user_role b
+                WHERE
+                    b.user_id = #{userId}
+            )
+    </select>
+    <update id ="updateSaleId">
+    update sys_user set wx_no = #{openId} where login_id =#{loginId}
+    </update>
+</mapper>

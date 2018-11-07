@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hansy.tyly.admin.cust.mapper.TBusiCustMapper">
+
+    <select id="queryCustDetailByCondtion" resultType="java.util.Map">
+        SELECT DISTINCT
+        bc.LOGIN_ID,
+        bo.ORG_NAME,
+        bc.USER_NAME,
+        bc.USER_TEL,
+        bc.USER_DEPT,
+        bc.USER_ID,
+        bc.INSERT_USER_ID,
+        bc.inst_User_Name,
+        bc. STATUS,
+        bc.INSERT_TIME,
+        bo.ORG_ID,
+        ll.login_time,
+        rur.ROLE_ID,
+        rur.SYS_UUID,
+        sr.ROLE_NAME
+        FROM
+        (
+        SELECT
+        su.LOGIN_ID,
+        su.USER_NAME,
+        su.USER_TEL,
+        su.USER_DEPT,
+        su.USER_ID,
+        su.INSERT_USER_ID,
+        su.`STATUS`,
+        uo.ORG_ID,
+        su.INSERT_TIME,
+        nsu.USER_NAME inst_User_Name
+        FROM
+        sys_user su
+        LEFT JOIN sys_r_user_org uo ON su.USER_ID = uo.USER_ID
+        LEFT JOIN sys_user nsu on nsu.USER_ID = su.INSERT_USER_ID
+        WHERE
+        su.USER_TYPE = '10003002'
+        <if test="custName != null and custName != ''">
+            AND su.USER_NAME LIKE concat(concat('%',#{custName}),'%')
+        </if>
+        <if test="status != null and status != ''">
+            AND su.STATUS LIKE concat(concat('%',#{status}),'%')
+        </if>
+        ) bc
+        LEFT JOIN (
+        SELECT
+        ll.user_id,
+        max(ll.login_time) login_time
+        FROM
+        sys_login_log ll
+        GROUP BY
+        ll.USER_ID
+        ) ll ON ll.user_id = bc.user_id
+        LEFT JOIN t_busi_org bo ON bc.ORG_ID = bo.ORG_ID
+        LEFT JOIN sys_r_user_role rur ON bc.USER_ID = rur.USER_ID
+        LEFT JOIN sys_role sr ON sr.ROLE_ID = rur.ROLE_ID
+        WHERE
+        1 = 1
+        <if test="orgName != null and orgName != ''">
+            AND bo.ORG_NAME LIKE concat(concat('%',#{orgName}),'%')
+        </if>
+        order by bc.INSERT_TIME desc
+    </select>
+</mapper>

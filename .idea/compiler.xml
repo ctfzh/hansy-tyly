@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="hansy-tyly-admin" />
+        <module name="hansy-tyly-customer" />
+        <module name="lemoncome-watchdog-procbatch" />
+        <module name="lemoncome-watchdog-tempindicators" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hansy-tyly" target="1.8" />
+      <module name="hansy-tyly-admin" target="1.8" />
+      <module name="hansy-tyly-customer" target="1.8" />
+      <module name="lemoncome-watchdog-procbatch" target="1.5" />
+      <module name="lemoncome-watchdog-tempindicators" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

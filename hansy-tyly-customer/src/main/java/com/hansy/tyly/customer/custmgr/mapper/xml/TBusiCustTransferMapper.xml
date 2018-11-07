@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.custmgr.mapper.TBusiCustTransferMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.customer.custmgr.model.TBusiCustTransfer">
+		<!-- WARNING - @mbg.generated -->
+		<id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+		<result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+		<result column="OLD_USER_ID" jdbcType="VARCHAR" property="oldUserId" />
+		<result column="NEW_USER_ID" jdbcType="VARCHAR" property="newUserId" />
+		<result column="STATUS" jdbcType="VARCHAR" property="status" />
+		<result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+		<result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		SYS_UUID, CUST_ID, OLD_USER_ID, NEW_USER_ID, `STATUS`, INSERT_TIME,
+		INSERT_USER_ID,
+		UPDATE_TIME
+	</sql>
+</mapper>

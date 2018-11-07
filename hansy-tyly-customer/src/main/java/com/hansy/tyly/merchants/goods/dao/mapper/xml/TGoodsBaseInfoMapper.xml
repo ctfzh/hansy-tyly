@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsBaseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.merchants.goods.dao.model.TGoodsBaseInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_ascription" jdbcType="VARCHAR" property="goodsAscription" />
+    <result column="market_amt" jdbcType="DECIMAL" property="marketAmt" />
+    <result column="retail_amt" jdbcType="DECIMAL" property="retailAmt" />
+    <result column="goods_status" jdbcType="VARCHAR" property="goodsStatus" />
+    <result column="goods_spec" jdbcType="VARCHAR" property="goodsSpec" />
+    <result column="goods_sale_num" jdbcType="INTEGER" property="goodsSaleNum" />
+    <result column="type_no" jdbcType="VARCHAR" property="typeNo" />
+    <result column="prod_info" jdbcType="VARCHAR" property="prodInfo" />
+    <result column="on_date" jdbcType="TIMESTAMP" property="onDate" />
+    <result column="down_date" jdbcType="TIMESTAMP" property="downDate" />
+    <result column="mian_pic_file_no" jdbcType="INTEGER" property="mianPicFileNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    base.goods_no as goods_no, base.goods_name as goods_name, base.goods_ascription as goods_ascription, 
+    base.market_amt as market_amt, base.retail_amt as retail_amt, base.goods_status as goods_status, 
+    base.goods_spec as goods_spec, base.goods_sale_num as goods_sale_num, base.type_no as type_no, 
+    base.prod_info as prod_info, base.on_date as on_date, base.down_date as down_date, 
+    base.mian_pic_file_no as mian_pic_file_no
+  </sql>
+</mapper>

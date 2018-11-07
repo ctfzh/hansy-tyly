@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.hansy.tyly.common.orders.dao.mapper.TBusOrderDetailMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.common.orders.dao.model.TBusOrderDetail">
+		<!-- WARNING - @mbg.generated -->
+		<id column="table_key" jdbcType="VARCHAR" property="tableKey" />
+		<result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+		<result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+		<result column="goods_num" jdbcType="INTEGER"
+			property="goodsNum" />
+		<result column="trans_date" jdbcType="TIMESTAMP"
+			property="transDate" />
+		<result column="goods_amt" jdbcType="DECIMAL"
+			property="goodsAmt" />
+	</resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    bod.table_key, bod.order_no, bod.goods_no, bod.goods_num, bod.trans_date, bod.goods_amt
+  </sql>
+
+	<!-- 查看订单详情 -->
+	<select id="findOrderByorderNo" resultType="Map">
+		select
+			L1.order_no,L2.goods_no,pay_type,mer_name,trans_date,update_date,trans_status,goods_amt,goods_num,goods_name,goods_sale_num
+		from
+			(select T1.order_no,T1.trans_status,T1.update_date,T1.pay_type,T2.goods_no,T2.trans_date,T3.mer_name
+				from
+				t_bus_order T1
+			left join t_bus_order_detail T2 on T1.order_no = T2.order_no
+			left join t_pub_mer_info T3 on T1.buy_person = T3.mer_no
+		) L1
+		left join
+			(select
+				T4.order_no,T4.goods_num,T4.goods_amt,T3.goods_no,T3.goods_name,T3.goods_sale_num
+			from t_bus_order_detail T4
+		left join t_goods_base_info T3 on T4.goods_no = T3.goods_no
+		)L2
+		on L1.order_no = L2.order_no
+		and L1.goods_no = L2.goods_no
+
+		<where>
+			<if test="orderNo!=null">
+				and T1.order_no=#{orderNo}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsFilesMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.goods.dao.model.TGoodsFiles">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="file_no" jdbcType="INTEGER" property="fileNo" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_status" jdbcType="VARCHAR" property="fileStatus" />
+    <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_main" jdbcType="BIT" property="isMain" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    file.file_no as file_no, file.goods_no as goods_no, file.file_path as file_path,
+    file.file_name as file_name, file.file_status as file_status, file.upload_date as upload_date,
+    file.update_date as update_date, file.is_main as is_main,file.file_type as fileType
+  </sql>
+
+
+
+  <select id="selectByGoodsNos" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from t_goods_files file
+  where
+    <if test="goodsNos!=null">
+       file.goods_no =#{goodsNos} and file.file_status= #{fileStatus} and file.file_type=#{fileType}
+    </if>
+
+
+</select>
+
+  <update id="updateByGoodsAndFilePath">
+    UPDATE  t_goods_files SET file_status=#{fileStatus} ,update_date=NOW(),is_main=0 where goods_no=#{goodsNo} and file_path =#{filePath}
+    and file_type=#{fileType}
+
+  </update>
+  <update id="updateByFileNameAndFilePath">
+    UPDATE  t_goods_files SET update_date=NOW(),is_main=#{isMain} where file_name=#{fileName} and file_path =#{filePath}
+
+  </update>
+</mapper>

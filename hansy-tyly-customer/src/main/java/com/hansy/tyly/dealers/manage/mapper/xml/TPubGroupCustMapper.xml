@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.manage.mapper.TPubGroupCustMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.manage.domain.TPubGroupCust">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="VARCHAR" property="tableKey" />
+    <result column="group_no" jdbcType="VARCHAR" property="groupNo" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="cust_no" jdbcType="VARCHAR" property="custNo" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+  </resultMap>
+
+
+
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    table_key, group_no, group_name, cust_no,insert_date
+  </sql>
+
+  <insert id="insertBatch">
+    insert into
+      t_pub_group_cust(table_key,group_no,group_name,cust_no,insert_date)
+    values
+      <foreach collection="list" index="index" item="item"  separator=",">
+        (#{item.tableKey},#{item.groupNo},#{item.groupName},#{item.custNo},#{item.insertDate})
+      </foreach>
+  </insert>
+  <delete id="deleteBatch">
+    delete from
+      t_pub_group_cust
+    where
+      group_no = #{arg1}
+    and
+      cust_no in
+    <foreach collection="arg0" item="item" separator="," open="(" close=")"  index="index">
+      #{item}
+    </foreach>
+  </delete>
+  <update id="updateGroupName">
+    update
+      t_pub_group_cust a
+    set
+      a.group_name = #{arg1}
+    where
+      a.group_no=#{arg0}
+  </update>
+    <select id="getGroupedMerchants" resultType="java.util.Map">
+        select
+          a.*
+        from
+          t_pub_mer_info a
+        left join
+          t_pub_group_cust b
+        on
+          b.cust_no = a.mer_no
+        where
+          b.group_no = #{arg0}
+    </select>
+</mapper>

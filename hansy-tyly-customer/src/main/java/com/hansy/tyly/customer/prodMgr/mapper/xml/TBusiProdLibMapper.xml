@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.prodMgr.mapper.TBusiProdLibMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.customer.prodMgr.model.TBusiProdLib">
+		<!-- WARNING - @mbg.generated -->
+		<id column="PROD_LIB_ID" jdbcType="VARCHAR" property="prodLibId" />
+		<result column="PROD_LIB_PATH" jdbcType="VARCHAR" property="prodLibPath" />
+		<result column="PROD_LIB_FILE" jdbcType="VARCHAR" property="prodLibFile" />
+		<result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+		<result column="STATUS" jdbcType="VARCHAR" property="status" />
+		<result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+		<result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		PROD_LIB_ID, PROD_LIB_PATH, PROD_LIB_FILE, PROD_ID, `STATUS`,
+		INSERT_TIME, INSERT_USER_ID,
+		UPDATE_TIME
+	</sql>
+</mapper>

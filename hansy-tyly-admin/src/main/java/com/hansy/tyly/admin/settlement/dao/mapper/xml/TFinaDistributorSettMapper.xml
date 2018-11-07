@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.settlement.dao.mapper.TFinaDistributorSettMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.settlement.dao.model.TFinaDistributorSett">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="sett_no" jdbcType="VARCHAR" property="settNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="distributor_name" jdbcType="VARCHAR" property="distributorName" />
+    <result column="distributor_person" jdbcType="VARCHAR" property="distributorPerson" />
+    <result column="person_phone" jdbcType="VARCHAR" property="personPhone" />
+    <result column="sett_total_amt" jdbcType="DECIMAL" property="settTotalAmt" />
+    <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+    <result column="sett_date" jdbcType="TIMESTAMP" property="settDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    sett_no, distributor_no, distributor_name, distributor_person, person_phone, sett_total_amt, 
+    staff_no, sett_date
+  </sql>
+  <insert id="insertBacth">
+    INSERT INTO t_fina_distributor_sett
+    (sett_no, distributor_no, distributor_name, distributor_person, person_phone, sett_total_amt, staff_no, sett_date)
+    VALUES
+    <foreach collection="distributorSetts" index="index" item="item" separator="," >
+      (#{item.settNo}, #{item.distributorNo}, #{item.distributorName}, #{item.distributorPerson}, #{item.personPhone},
+      #{item.settTotalAmt}, #{item.staffNo},#{item.settDate})
+    </foreach>
+  </insert>
+  <select id="listSettlements" resultType="com.hansy.tyly.admin.settlement.dao.model.TFinaDistributorSett">
+      SELECT * FROM t_fina_distributor_sett
+      <where>
+     <if test="distributorName != null">
+          AND distributor_name LIKE CONCAT('%', #{distributorName}, '%')
+        </if>
+        <if test="startTime != null">
+           AND sett_date &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+           <![CDATA[
+           AND   sett_date <= #{endTime}
+           ]]>
+        </if>
+        <if test="settNo != null">
+          AND sett_no = #{settNo}
+        </if>
+      </where>
+    ORDER BY sett_date DESC
+    </select>
+
+  <select id="getAll" resultType="java.util.Map">
+    select
+      a.sett_date,
+      a.distributor_person,
+      a.person_phone,
+      a.sett_total_amt,
+      count(b.order_no) as total_count
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order d
+    on
+      d.order_no = b.order_no
+    where
+      a.distributor_no = #{distributor_no}
+    and
+      d.trans_status = #{transStatus}
+    group by
+      b.sett_no
+    order by
+      a.sett_date desc
+  </select>
+  <select id="searchAll" resultType="java.util.Map">
+    select
+    a.sett_date,
+    a.distributor_person,
+    a.person_phone,
+    a.sett_total_amt,
+    count(b.order_no) as total_count
+    from
+    t_fina_distributor_sett a
+    inner join
+    t_fina_distributor_order b
+    on
+    a.sett_no = b.sett_no
+    left join
+    t_bus_order d
+    on
+    d.order_no = b.order_no
+    <where>
+      a.distributor_no = #{distributor_no}
+      and d.trans_status = #{transStatus}
+      <if test="start_time != null">
+        and a.sett_date >= #{start_time}
+      </if>
+      <if test="end_time != null">
+        and #{end_time} >= a.sett_date
+      </if>
+      <if test="sett_no != null">
+        and a.sett_no = #{sett_no}
+      </if>
+    </where>
+    group by
+    b.sett_no
+    order by
+    a.sett_date desc
+  </select>
+
+  <select id="getAllDetail" resultType="java.util.Map">
+    select
+      b.order_no,
+      c.total_amt,
+      a.distributor_person,
+      a.person_phone,
+      c.contact_addre,
+      d.trans_date,
+      c.trans_status
+    from
+      t_fina_distributor_sett a
+    inner join
+      t_fina_distributor_order b
+    on
+      a.sett_no = b.sett_no
+    left join
+      t_bus_order c
+    on
+      c.order_no = b.order_no
+    left join
+      t_bus_order_detail d
+    on
+      d.order_no = c.order_no
+    where
+      a.distributor_no = #{distributor_no}
+    and
+      c.trans_status = #{transStatus}
+    order  by
+      a.sett_date desc
+  </select>
+
+  <select id="searchDetail" resultType="java.util.Map">
+    select
+    b.order_no,
+    c.total_amt,
+    a.distributor_person,
+    a.person_phone,
+    c.contact_addre,
+    d.trans_date,
+    c.trans_status
+    from
+    t_fina_distributor_sett a
+    inner join
+    t_fina_distributor_order b
+    on
+    a.sett_no = b.sett_no
+    left join
+    t_bus_order c
+    on
+    c.order_no = b.order_no
+    left join
+    t_bus_order_detail d
+    on
+    d.order_no = c.order_no
+    left join
+    t_pub_mer_info e
+    on
+    e.mer_no = c.buy_person
+    <where>
+      a.distributor_no = #{distributor_no}
+      and c.trans_status = #{transStatus}
+      <if test="distributor_name != null">
+        and a.distributor_name = #{distributor_name}
+      </if>
+      <if test="merchant_name">
+        and e.mer_name = #{merchant_name}
+      </if>
+      <if test="start_time != null">
+        and d.trans_date >= #{start_time}
+      </if>
+      <if test="end_time != null">
+        and #{end_time} >= d.trans_date
+      </if>
+    </where>
+    order  by
+    a.sett_date desc
+
+  </select>
+</mapper>

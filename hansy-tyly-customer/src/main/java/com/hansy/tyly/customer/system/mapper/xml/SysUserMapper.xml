@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.system.mapper.SysUserMapper">
+
+  <!-- 登录专用-校验用户状态、用户所在机构状态 -->
+  <select id="selectUserByLoginIdAndSataus" parameterType="java.lang.String" resultType="com.hansy.tyly.admin.base.bean.UserProfile" >
+  	<!-- SELECT T1.USER_ID,T1.LOGIN_ID,T1.USER_NAME,T1.USER_PWD,
+		T1.USER_TEL,T1. STATUS AS USER_STAT,T2.ORG_ID,T3. STATUS AS ORG_STAT
+	FROM
+		SYS_USER T1,SYS_R_USER_ORG T2,T_BUSI_ORG T3
+	WHERE
+		T1.USER_ID = T2.USER_ID
+	AND T2.ORG_ID = T3.ORG_ID
+	AND T1.LOGIN_ID = #{loginId} -->
+	SELECT
+		T4.*, T5.LAST_LOGIN_TIME
+	FROM
+		(SELECT T1.USER_ID,T1.LOGIN_ID,T1.USER_NAME,T1.USER_PWD,T1.USER_TEL,
+				T1. STATUS AS USER_STAT,T2.ORG_ID,T3. STATUS AS ORG_STAT
+			FROM
+				SYS_USER T1,SYS_R_USER_ORG T2,T_BUSI_ORG T3
+			WHERE
+				T1.USER_ID = T2.USER_ID AND T2.ORG_ID = T3.ORG_ID
+			AND T1.LOGIN_ID = #{loginId}
+		) T4
+	LEFT JOIN (SELECT
+			L1.USER_ID,L1.INSERT_TIME AS LAST_LOGIN_TIME
+		FROM
+			SYS_LOGIN_LOG L1
+		GROUP BY
+			L1.USER_ID
+	) T5 ON T4.USER_ID = T5.USER_ID
+  </select>
+  
+  <!-- 机构用户查询，仅仅查询当前机构除机构管理员本人以外的其他人员 -->
+  <select id="selectSysUserList" parameterType="java.util.Map" resultType="java.util.Map">
+  	SELECT
+		T2.USER_ID, T2.LOGIN_ID, T2.USER_NAME, T2.USER_DEPT, T2.USER_TEL, T2.STATUS, T2.INSERT_TIME, T4.LOGIN_TIME
+	FROM (SELECT T0.* FROM SYS_USER T0,SYS_R_USER_ORG T1,SYS_R_USER_ROLE T5
+			WHERE T0.USER_ID = T1.USER_ID AND T1.ORG_ID = #{orgId} AND T0.USER_ID=T5.USER_ID AND T5.ROLE_ID != 'Org_Admin' AND T0.STATUS = '00001001') T2
+	LEFT JOIN (SELECT T3.USER_ID,MAX(T3.LOGIN_TIME) AS LOGIN_TIME
+		FROM SYS_LOGIN_LOG T3 GROUP BY T3.USER_ID) T4 ON T2.USER_ID = T4.USER_ID ORDER BY T2.INSERT_TIME DESC
+  </select>
+  
+  <!-- 根据用户UserId查询用户角色 -->
+  <select id="queryUserRolesByUserId" parameterType="java.util.Map" resultType="com.hansy.tyly.admin.dao.model.SysRole">
+      SELECT
+          DISTINCT A.*
+      FROM
+          SYS_ROLE A,
+          SYS_R_USER_ROLE B
+      WHERE
+          B.ROLE_ID = A.ROLE_ID
+      AND B.USER_ID = #{userId}
+      AND A.STATUS = #{status}
+      AND A.ROLE_TYPE = #{roleType}
+  </select>
+  
+  <select id="selectCustMangerByUserId" parameterType="java.util.Map" resultType="java.util.Map">
+	  SELECT
+			T1.USER_ID,T1.USER_NAME
+		FROM
+			SYS_USER T1,
+			SYS_R_USER_ROLE T2,
+			SYS_R_USER_ORG T3
+		WHERE
+			T1.USER_ID = T2.USER_ID
+		AND T1.STATUS = '00001001'
+		AND T1.USER_ID != #{userId}
+		AND T1.USER_ID = T3.USER_ID
+		AND T3.ORG_ID = #{orgId}
+		AND T2.ROLE_ID = #{roleId}
+  </select>
+</mapper>

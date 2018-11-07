@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TReportConfMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TReportConf">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="report_key" jdbcType="VARCHAR" property="reportKey" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="chart_type" jdbcType="VARCHAR" property="chartType" />
+    <result column="report_title" jdbcType="VARCHAR" property="reportTitle" />
+    <result column="width" jdbcType="VARCHAR" property="width" />
+    <result column="height" jdbcType="VARCHAR" property="height" />
+    <result column="sql2" jdbcType="VARCHAR" property="sql2" />
+    <result column="conf_class_sql" jdbcType="VARCHAR" property="confClassSql" />
+    <result column="report_menu_name" jdbcType="VARCHAR" property="reportMenuName" />
+    <result column="is_enable" jdbcType="VARCHAR" property="isEnable" />
+    <result column="sequence" jdbcType="VARCHAR" property="sequence" />
+    <result column="show_zero_data" jdbcType="VARCHAR" property="showZeroData" />
+    <result column="x_axis_name" jdbcType="VARCHAR" property="xAxisName" />
+    <result column="y_axis_name" jdbcType="VARCHAR" property="yAxisName" />
+    <result column="subcaption" jdbcType="VARCHAR" property="subcaption" />
+    <result column="decimals" jdbcType="VARCHAR" property="decimals" />
+    <result column="format_number_scale" jdbcType="VARCHAR" property="formatNumberScale" />
+    <result column="number_scale_value" jdbcType="VARCHAR" property="numberScaleValue" />
+    <result column="number_scale_unit" jdbcType="VARCHAR" property="numberScaleUnit" />
+    <result column="number_prefix" jdbcType="VARCHAR" property="numberPrefix" />
+    <result column="number_suffix" jdbcType="VARCHAR" property="numberSuffix" />
+    <result column="base_font_size" jdbcType="VARCHAR" property="baseFontSize" />
+    <result column="show_values" jdbcType="VARCHAR" property="showValues" />
+    <result column="show_percent_values" jdbcType="VARCHAR" property="showPercentValues" />
+    <result column="show_percent_in_tool_tip" jdbcType="VARCHAR" property="showPercentInToolTip" />
+    <result column="show_y_axis_values" jdbcType="VARCHAR" property="showYAxisValues" />
+    <result column="force_decimals" jdbcType="VARCHAR" property="forceDecimals" />
+    <result column="y_axis_value_decimals" jdbcType="VARCHAR" property="yAxisValueDecimals" />
+    <result column="is_page" jdbcType="VARCHAR" property="isPage" />
+    <result column="page_size" jdbcType="DOUBLE" property="pageSize" />
+    <result column="is_down_load" jdbcType="VARCHAR" property="isDownLoad" />
+    <result column="x_axis_turn" jdbcType="VARCHAR" property="xAxisTurn" />
+    <result column="show_x_axis_values" jdbcType="VARCHAR" property="showXAxisValues" />
+  </resultMap>
+  <select id="getReportInfo" resultMap="BaseResultMap">
+  select * from t_report_conf 
+  where 1=1
+  <if test="menu != null">
+  and  report_title like '%${menu}%'
+  </if>
+  </select>
+  
+  <delete id="deleteReport">
+   delete from t_report_conf where report_key=#{reportKey}
+  </delete>
+  <select id="getDataJson"  parameterType="string" resultType="java.util.Map">
+       ${_parameter}
+  </select>
+</mapper>

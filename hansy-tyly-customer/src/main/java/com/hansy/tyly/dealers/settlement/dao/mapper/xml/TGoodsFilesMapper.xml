@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.settlement.dao.mapper.TGoodsFilesMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.settlement.dao.model.TGoodsFiles">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="file_no" jdbcType="INTEGER" property="fileNo" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_status" jdbcType="VARCHAR" property="fileStatus" />
+    <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_main" jdbcType="BIT" property="isMain" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+  </resultMap>
+</mapper>

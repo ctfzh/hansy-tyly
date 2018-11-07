@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.reportMgr.mapper.TScCustIndcRstMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hansy.tyly.customer.reportMgr.model.TScCustIndcRst">
+		<id column="SYS_UUID" jdbcType="VARCHAR" property="sysUuid" />
+		<result column="BILL_ID" jdbcType="VARCHAR" property="billId" />
+		<result column="INDC_ID" jdbcType="VARCHAR" property="indcId" />
+		<result column="INDC_VALUE" jdbcType="VARCHAR" property="indcValue" />
+		<result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		SYS_UUID, BILL_ID, INDT_ID, INDT_VALUE, INSERT_TIME, INSERT_USER_ID
+	</sql>
+	<!-- 通过流水号查询指标结果 -->
+	<select id="queryIndcInfoByBillId" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		<!--SELECT T1.BILL_ID, T1.INDC_ID AS INDT_ID, T2.INDICATOR_NAME AS IDNT_NAME, 
+			T1.INDC_VALUE AS INDT_VALUE FROM T_BUSI_BILL_DTL T1, T_BUSI_INDICATOR T2 
+			WHERE T1.INDC_ID = T2.INDICATOR_ID AND T1.BILL_ID = #{billId} -->
+		<!--SELECT L1.* FROM (SELECT T1.BILL_ID, T1.INDC_ID AS INDT_ID, T2.INDICATOR_NAME 
+			AS IDNT_NAME, CASE T2.INDC_TYPE WHEN '10020001' THEN( CASE T1.INDC_VALUE 
+			WHEN '0' THEN '否' WHEN '-1' THEN '否' WHEN '1' THEN '是' ELSE T1.INDC_VALUE 
+			END) ELSE T1.INDC_VALUE END AS INDT_VALUE, T1.INDC_VALUE AS INDC_VALUE,T2.INDC_TYPE 
+			FROM T_BUSI_BILL_DTL T1,T_BUSI_INDICATOR T2 WHERE T1.INDC_ID = T2.INDICATOR_ID 
+			AND T1.BILL_ID = #{billId} ) L1 WHERE L1.INDT_VALUE NOT IN ('否', '0','-1') 
+			ORDER BY L1.INDC_TYPE DESC, L1.INDC_VALUE+0 DESC -->
+
+		select ls.*,
+		sci.CODE_INFO_NAME,
+		tp.INDC_LVL
+		from (
+		SELECT L1.* FROM (SELECT
+		T1.BILL_ID,
+		T1.INDC_ID AS INDT_ID,
+		T2.INDICATOR_NAME AS IDNT_NAME,
+		CASE T2.INDC_TYPE
+		WHEN '10020001' THEN(
+		CASE T1.INDC_VALUE
+		WHEN '-1' THEN
+		'否'
+		ELSE
+		T1.INDC_VALUE
+		END)
+		ELSE
+		T1.INDC_VALUE
+		END AS INDT_VALUE,
+		T1.INDC_VALUE AS INDC_VALUE,T2.INDC_TYPE
+		FROM
+		T_BUSI_BILL_DTL T1,T_BUSI_INDICATOR T2
+		WHERE
+		T1.INDC_ID = T2.INDICATOR_ID AND T1.BILL_ID = #{billId}
+		) L1 WHERE L1.INDT_VALUE NOT IN ('否','-1')
+		ORDER BY
+		L1.INDC_TYPE DESC,
+		L1.INDC_VALUE+0 DESC) ls
+		INNER JOIN T_BUSI_INDC_PARA tp on ls.INDT_ID=tp.INDC_ID and ls.INDT_VALUE
+		BETWEEN tp.INDC_MIN_VAL and tp.INDC_MAX_VAL
+		LEFT JOIN sys_code_info sci on tp.INDC_LVL=sci.CODE_INFO_VALUE order by
+		tp.INDC_LVL desc
+	</select>
+
+	<select id="queryRiskStatistics_back" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT L1.DCS_RST,COUNT(L1.DCS_RST) AS RST_NUM,L1.INST_TIME
+		FROM
+		(SELECT T2.BILL_ID,T2.CUST_ID,T1.DCS_RST,DATE_FORMAT(T2.INSERT_TIME,
+		'%Y-%m-%d') AS INST_TIME
+		FROM T_SC_CUST_DCS_RST T1,T_SC_CUST_BILL T2,T_BUSI_CUST T3
+		WHERE
+		T1.BILL_ID = T2.BILL_ID
+		AND T2.CUST_ID = T3.CUST_ID
+		AND T3.ORG_ID = #{orgId}
+		AND T1.DCS_RST='10017001'
+		AND T2.INSERT_TIME &gt;= #{beginTime} AND T2.INSERT_TIME &lt;= #{endTime}
+		) L1
+		GROUP BY L1.DCS_RST,L1.INST_TIME ORDER BY L1.INST_TIME
+	</select>
+
+	<!-- 风控报告列表(包含风控结果)，机构管理员可查所有，客户经理仅查自己名下的客户 -->
+	<select id="queryRiskDetailList_back" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT L1.* FROM
+		(SELECT
+		T2.BILL_ID,T2.CUST_ID,T3.CUST_NAME,T3.CUST_CERT_NO,T3.CUST_TEL,T3.LOAN_AMT,T4.PROD_NAME,T4.MNG_TYPE,
+		T1.DCS_RST,DATE_FORMAT(T2.INSERT_TIME, '%Y-%m-%d') AS INST_TIME
+		FROM T_SC_CUST_DCS_RST T1,T_SC_CUST_BILL T2,T_BUSI_CUST T3,T_BUSI_PROD T4
+		WHERE
+		T1.BILL_ID = T2.BILL_ID
+		AND T2.CUST_ID = T3.CUST_ID
+		AND T3.ORG_ID = #{orgId}
+		AND T2.PROD_ID = T4.PROD_ID
+		AND T1.DCS_RST='10017001') L1 WHERE L1.INST_TIME = #{queryDate}
+	</select>
+
+	<select id="queryRiskList_back" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L1.INST_TIME AS BUSI_DATE,
+		CONCAT(L1.INST_TIME,' 管理债务人状态报告') AS BUSI_TITLE
+		FROM
+		(SELECT
+		DATE_FORMAT(T1.INSERT_TIME, '%Y-%m-%d') AS INST_TIME
+		FROM
+		T_SC_CUST_DCS_RST T1,T_SC_CUST_BILL T2,T_BUSI_CUST T3
+		WHERE
+		T1.INSERT_TIME &gt;= #{beginTime} AND T1.INSERT_TIME &lt;= #{endTime}
+		AND T1.BILL_ID = T2.BILL_ID AND T2.CUST_ID = T3.CUST_ID
+		AND T3.ORG_ID = #{orgId}
+		<if test="userId != null and userId != ''">
+			AND T3.USER_ID = #{userId}
+		</if>
+		) L1
+		GROUP BY
+		L1.INST_TIME
+		ORDER BY
+		L1.INST_TIME DESC
+	</select>
+
+	<!-- 从账单历史表读取 -->
+	<!-- 风险统计 -->
+	<select id="queryRiskStatistics" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L1.BUSI_DATE AS INST_TIME,L1.DCS_RST,COUNT(L1.DCS_RST) AS
+		RST_NUM
+		FROM
+		(SELECT
+		T1.BUSI_DATE,T1.DCS_RST,T2.USER_ID
+		FROM
+		T_BUSI_BILL_HIS T1,T_BUSI_CUST T2
+		WHERE
+		T1.CUST_ID = T2.CUST_ID
+		AND T1.BUSI_DATE &gt;= #{beginTime}
+		AND T1.BUSI_DATE &lt;= #{endTime}
+		<choose>
+			<when test="dcsRst !=null and dcsRst != ''">
+				AND T1.DCS_RST = #{dcsRst}
+			</when>
+			<otherwise>
+				AND T1.DCS_RST IS NOT NULL
+			</otherwise>
+		</choose>
+		<if test="userId !=null and userId != ''">
+			AND T2.USER_ID = #{userId}
+		</if>
+		AND T1.ORG_ID = #{orgId}
+		) L1
+		GROUP BY
+		L1.BUSI_DATE,L1.DCS_RST ORDER BY L1.BUSI_DATE
+	</select>
+
+	<!-- 风控报告列表(包含风控结果)，机构管理员可查所有，客户经理仅查自己名下的客户 -->
+	<select id="queryRiskDetailList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		T1.BUSI_DATE AS
+		INST_TIME,T1.DCS_RST,T2.USER_ID,T2.CUST_ID,T2.CUST_NAME,
+		T2.CUST_CERT_NO,T2.CUST_TEL,T2.LOAN_AMT,T3.PROD_NAME,T3.MNG_TYPE
+		FROM
+		T_BUSI_BILL_HIS T1,T_BUSI_CUST T2,T_BUSI_PROD T3
+		WHERE
+		T1.CUST_ID = T2.CUST_ID AND T1.PROD_ID=T3.PROD_ID
+		AND T1.BUSI_DATE = #{queryDate}
+		AND T1.ORG_ID = #{orgId}
+		<choose>
+			<when test="dcsRst !=null and dcsRst != ''">
+				AND T1.DCS_RST = #{dcsRst}
+			</when>
+			<otherwise>
+				AND T1.DCS_RST IS NOT NULL
+			</otherwise>
+		</choose>
+		<if test="userId !=null and userId != ''">
+			AND T2.USER_ID = #{userId}
+		</if>
+	</select>
+
+	<!-- 风控结果列表 -->
+	<select id="queryRiskList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		L1.BUSI_DATE AS BUSI_DATE,
+		CONCAT(L1.BUSI_DATE,' 管理债务人状态报告') AS BUSI_TITLE
+		FROM
+		(SELECT T1.BUSI_DATE
+		FROM
+		T_BUSI_BILL_HIS T1,T_BUSI_CUST T2
+		WHERE
+		T1.CUST_ID = T2.CUST_ID
+		AND T1.BUSI_DATE &gt;= #{beginTime}
+		AND T1.BUSI_DATE &lt;= #{endTime}
+		AND T1.ORG_ID = #{orgId}
+		<if test="userId != null and userId != ''">
+			AND T2.USER_ID = #{userId}
+		</if>
+		) L1
+		GROUP BY
+		L1.BUSI_DATE
+		ORDER BY
+		BUSI_DATE DESC
+	</select>
+
+	<!-- 根据客户号查询风控结果历史概况 -->
+	<select id="queryCustRiskReportList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		T1.BUSI_DATE,
+		T1.BILL_ID,
+		T1.BILL_AMT,
+		T1.DCS_RST,
+		T1.SCORE,
+		T2.PROD_NAME,
+		T2.MNG_TYPE,
+		T3.FRE_NUM,
+		T3.FRE_TYPE
+		FROM
+		T_BUSI_BILL_HIS T1,
+		T_BUSI_PROD T2,
+		T_BUSI_CUST_PROD T3
+		WHERE
+		T1.CUST_ID = #{custId}
+		<if test="busiDate != null and busiDate != ''">
+			AND T1.BUSI_DATE = #{busiDate}
+		</if>
+		<if test="dcsRst != null and dcsRst != ''">
+			AND T1.DCS_RST = #{dcsRst}
+		</if>
+		AND T3.STATUS = '00001001'
+		AND T1.PROD_ID = T2.PROD_ID
+		AND T1.PROD_ID = T3.PROD_ID
+		AND T1.CUST_ID = T3.CUST_ID ORDER BY T1.BUSI_DATE DESC
+	</select>
+
+</mapper>

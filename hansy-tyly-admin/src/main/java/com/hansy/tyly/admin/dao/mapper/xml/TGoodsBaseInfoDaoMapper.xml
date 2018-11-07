@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoDaoMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.GoodsBaseInfos">
+        <association property="goodsBaseInfo" resultMap="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+        <collection property="goodsFilesList" resultMap="com.hansy.tyly.admin.dao.mapper.TGoodsFilesMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="findGoodsListByParams"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.admin.dao.mapper.TGoodsFilesMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        left join t_goods_files file on base.goods_no=file.goods_no
+        where base.goods_ascription  = #{goodsAscription}
+          and base.mian_pic_file_no=file.file_no
+            <if test="typeNo!=null" >
+              and base.type_no=#{typeNo}
+            </if>
+            <if test="fileStatus!=null" >
+                and file.file_status=#{fileStatus}
+            </if>
+            <if test="goodsName!=null" >
+                and base.goods_name  like CONCAT('%',#{goodsName},'%')
+            </if>
+            <if test="goodsNo!=null" >
+                and base.goods_no  = #{goodsNo}
+            </if>
+            <if test="onStatus!=null" >
+                and base.on_status  = #{onStatus}
+            </if>
+
+           order by base.on_date DESC
+    </select>
+
+    <select id="getGoodsInfo"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>
+        from t_goods_base_info base
+        where base.goods_no =#{goodsNo}
+    </select>
+
+</mapper>

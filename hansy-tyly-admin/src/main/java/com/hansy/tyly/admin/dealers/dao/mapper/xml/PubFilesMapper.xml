@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dealers.dao.mapper.PubFilesMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dealers.dao.model.PubFiles">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="file_no" jdbcType="VARCHAR" property="fileNo" />
+    <result column="cust_no" jdbcType="VARCHAR" property="custNo" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_status" jdbcType="VARCHAR" property="fileStatus" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+    <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    file_no, cust_no, file_path, file_name, file_status, upload_date, update_date, file_type
+  </sql>
+  <select id="selectByCustNo" resultType="com.hansy.tyly.admin.dealers.dao.model.PubFiles">
+    SELECT * FROM t_pub_files WHERE cust_no = #{custNo}
+  </select>
+  
+  <select id="selectTwoDimensionCode" resultType="com.hansy.tyly.admin.dealers.dao.model.PubFiles">
+  	 SELECT * FROM t_pub_files WHERE cust_no = #{custNo} 
+  	 and
+  	 file_type = #{fileType}
+  </select>
+  <delete id="deleteTwoDimensionCode">
+  	 delete from t_pub_files
+  	 where cust_no = #{custNo}
+  	 and file_type = #{fileType}
+  </delete>
+</mapper>

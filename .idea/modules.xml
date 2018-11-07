@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/hansy-tyly.iml" filepath="$PROJECT_DIR$/.idea/hansy-tyly.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hansy-tyly-admin/hansy-tyly-admin.iml" filepath="$PROJECT_DIR$/hansy-tyly-admin/hansy-tyly-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hansy-tyly-customer/hansy-tyly-customer.iml" filepath="$PROJECT_DIR$/hansy-tyly-customer/hansy-tyly-customer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hansy-tyly-procbatch/lemoncome-watchdog-procbatch.iml" filepath="$PROJECT_DIR$/hansy-tyly-procbatch/lemoncome-watchdog-procbatch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hansy-tyly-tempindicators/lemoncome-watchdog-tempindicators.iml" filepath="$PROJECT_DIR$/hansy-tyly-tempindicators/lemoncome-watchdog-tempindicators.iml" />
+    </modules>
+  </component>
+</project>

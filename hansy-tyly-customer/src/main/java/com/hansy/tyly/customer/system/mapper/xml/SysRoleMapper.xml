@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.customer.system.mapper.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.customer.system.model.SysRole">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="ROLE_TYPE" jdbcType="VARCHAR" property="roleType" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    ROLE_ID, ROLE_NAME, ROLE_TYPE, `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+</mapper>

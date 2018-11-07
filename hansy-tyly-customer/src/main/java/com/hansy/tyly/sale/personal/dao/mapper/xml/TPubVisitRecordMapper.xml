@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.sale.personal.dao.mapper.TPubVisitRecordMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.sale.personal.dao.model.TPubVisitRecord">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+    <result column="staff_no" jdbcType="VARCHAR" property="staffNo" />
+    <result column="cust_type" jdbcType="VARCHAR" property="custType" />
+    <result column="cust_no" jdbcType="VARCHAR" property="custNo" />
+    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
+    <result column="visit_addre" jdbcType="VARCHAR" property="visitAddre" />
+    <result column="latitude" jdbcType="VARCHAR" property="latitude" />
+    <result column="longitude" jdbcType="VARCHAR" property="longitude" />
+    <result column="visit_content" jdbcType="VARCHAR" property="visitContent" />
+    <result column="buy_type" jdbcType="TIMESTAMP" property="buyType" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    visit_no, staff_no, cust_type, cust_no, cust_name, visit_addre, latitude, longitude, 
+    visit_content, buy_type
+  </sql>
+  <select id="getVisits" resultType="java.util.Map">
+    select DISTINCT a.click_date,
+			ifnull(b.count,0) as disCount ,
+			ifnull(c.count,0) as merCount ,
+			ifnull(d.count,0) as totalCount
+
+from (
+      SELECT str_to_date(#{date},'%Y-%m-%d') as click_date
+      <if test="dateType == 'day' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} day) as click_date
+          </foreach>
+
+      </if>
+      <if test="dateType == 'month' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} MONTH ) as click_date
+          </foreach>
+      </if>
+      <if test="dateType == 'year' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} YEAR ) as click_date
+          </foreach>
+      </if>
+
+      ) a left join (
+
+
+	select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(record.buy_type,'%Y') as datetime,
+
+      </if>
+
+		count( DISTINCT record.visit_no) as count
+	from t_pub_visit_record   record
+	where   record.staff_no='e97ccab361de47a78e3d75a5075cfcb6'  and record.cust_type=1006002
+	group by datetime
+
+
+) b
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=b.datetime
+
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=b.datetime
+
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=b.datetime
+
+      </if>
+
+left join (
+
+
+	select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(record.buy_type,'%Y') as datetime,
+
+      </if>
+      count( DISTINCT record.visit_no) as count
+	from t_pub_visit_record   record
+	where   record.staff_no='e97ccab361de47a78e3d75a5075cfcb6'  and record.cust_type=1006001
+	group by datetime
+
+) c
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=c.datetime
+
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=c.datetime
+
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=c.datetime
+
+      </if>
+
+left join (
+
+
+	select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(record.buy_type,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(record.buy_type,'%Y') as datetime,
+      </if>
+      count( DISTINCT record.visit_no) as count
+	from t_pub_visit_record   record
+	where   record.staff_no=#{saleNo}
+	group by datetime
+
+) d
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=d.datetime
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=d.datetime
+
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=d.datetime
+      </if>
+    order by click_date;
+
+
+  </select>
+  <select id="getUserCount" resultType="java.util.Map">
+
+  select DISTINCT a.click_date,
+      <if test="saleNo!=null">
+          ifnull(b.count,0)+ifnull(c.count,0) as userCount
+      </if>
+      <if test="saleNo==null">
+          ifnull(b.count,0)  as disUserCount,
+          ifnull(c.count,0) as merUserCount
+      </if>
+
+  from (
+      SELECT str_to_date(#{date},'%Y-%m-%d') as click_date
+      <if test="dateType == 'day' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} day) as click_date
+          </foreach>
+
+      </if>
+      <if test="dateType == 'month' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} MONTH ) as click_date
+          </foreach>
+      </if>
+      <if test="dateType == 'year' ">
+          <foreach collection="list" index="index" item="item">
+              union all
+              SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} YEAR ) as click_date
+          </foreach>
+      </if>
+
+      ) a left join (
+
+
+	select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(dis.insert_date,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(dis.insert_date,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(dis.insert_date,'%Y') as datetime,
+      </if>
+
+      count( dis.distributor_no) as count
+      from t_pub_distributor_info   dis
+      <where>
+
+          <if test="saleNo!=null">
+            and dis.staff_no=#{saleNo}
+
+          </if>
+      </where>
+      group by datetime
+
+
+  ) b
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=b.datetime
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=b.datetime
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=b.datetime
+      </if>
+  left join (
+      select
+      <if test="dateType == 'day' ">
+          DATE_FORMAT(mer.insert_date,'%Y-%m-%d') as datetime,
+      </if>
+      <if test="dateType == 'month' ">
+          DATE_FORMAT(mer.insert_date,'%Y-%m') as datetime,
+      </if>
+      <if test="dateType == 'year' ">
+          DATE_FORMAT(mer.insert_date,'%Y') as datetime,
+      </if>
+
+      count(mer.mer_no) as count
+      from t_pub_mer_info mer
+
+      <where>
+
+          <if test="saleNo!=null">
+              and mer.staff_no=#{saleNo}
+
+          </if>
+      </where>
+      group by datetime
+
+
+ )c
+      <if test="dateType == 'day' ">
+          on   date_format(a.click_date,'%Y-%m-%d')=c.datetime
+      </if>
+      <if test="dateType == 'month' ">
+          on   date_format(a.click_date,'%Y-%m')=c.datetime
+      </if>
+      <if test="dateType == 'year' ">
+          on  date_format(a.click_date,'%Y')=c.datetime
+      </if>
+  order by click_date;
+
+
+
+
+
+  </select>
+
+<select id="getConsumeCount" resultType="java.util.Map">
+  select DISTINCT a.click_date,
+      <if test="saleNo!=null">
+		ifnull(b.count,0)+ifnull(c.count,0) as consumeCount
+      </if>
+      <if test="saleNo==null">
+          ifnull(b.count,0)  as disConsumeCount,
+          ifnull(c.count,0) as merConsumeCount
+      </if>
+
+  from (
+    SELECT str_to_date(#{date},'%Y-%m-%d') as click_date
+    <if test="dateType == 'day' ">
+        <foreach collection="list" index="index" item="item">
+            union all
+            SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} day) as click_date
+        </foreach>
+
+    </if>
+    <if test="dateType == 'month' ">
+        <foreach collection="list" index="index" item="item">
+            union all
+            SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} MONTH ) as click_date
+        </foreach>
+    </if>
+    <if test="dateType == 'year' ">
+        <foreach collection="list" index="index" item="item">
+            union all
+            SELECT date_sub(str_to_date(#{date},'%Y-%m-%d'), interval #{item} YEAR ) as click_date
+        </foreach>
+    </if>
+
+    ) a left join (
+
+
+	select
+            <if test="dateType == 'day' ">
+                DATE_FORMAT(torder.update_date,'%Y-%m-%d') as datetime,
+            </if>
+            <if test="dateType == 'month' ">
+                DATE_FORMAT(torder.update_date,'%Y-%m') as datetime,
+            </if>
+            <if test="dateType == 'year' ">
+                DATE_FORMAT(torder.update_date,'%Y') as datetime,
+            </if>
+
+				SUM(torder.total_amt) as count
+	from t_pub_distributor_info   dis
+	left join t_bus_order torder on torder.buy_person=dis.distributor_no and (torder.trans_status=10024005 or torder.trans_status=10024008)
+    <where>
+        <if test="saleNo!=null">
+            and   dis.staff_no=#{saleNo}
+
+        </if>
+    </where>
+	group by datetime
+
+
+  ) b
+    <if test="dateType == 'day' ">
+        on   date_format(a.click_date,'%Y-%m-%d')=b.datetime
+    </if>
+    <if test="dateType == 'month' ">
+        on   date_format(a.click_date,'%Y-%m')=b.datetime
+    </if>
+    <if test="dateType == 'year' ">
+        on  date_format(a.click_date,'%Y')=b.datetime
+    </if>
+left join (
+    select
+        <if test="dateType == 'day' ">
+            DATE_FORMAT(torder.update_date,'%Y-%m-%d') as datetime,
+        </if>
+        <if test="dateType == 'month' ">
+            DATE_FORMAT(torder.update_date,'%Y-%m') as datetime,
+        </if>
+        <if test="dateType == 'year' ">
+            DATE_FORMAT(torder.update_date,'%Y') as datetime,
+        </if>
+
+        SUM(torder.total_amt) as count
+    from t_pub_mer_info mer
+    left join t_bus_order torder on torder.buy_person=mer.mer_no and  torder.trans_status=10024005
+    <where>
+        <if test="saleNo!=null">
+          and   mer.staff_no=#{saleNo}
+
+        </if>
+    </where>
+
+    group by datetime
+
+
+    )c
+    <if test="dateType == 'day' ">
+        on   date_format(a.click_date,'%Y-%m-%d')=c.datetime
+    </if>
+    <if test="dateType == 'month' ">
+        on   date_format(a.click_date,'%Y-%m')=c.datetime
+    </if>
+    <if test="dateType == 'year' ">
+        on  date_format(a.click_date,'%Y')=c.datetime
+    </if>
+
+    order by click_date;
+
+
+</select>
+  <select id="saleUserOrConsume" resultType="java.util.Map">
+      select  su.USER_NAME,
+				ifnull(a.count,0) as disCount ,
+				ifnull(b.count,0) as disBuyCount ,
+				ifnull(c.count,0) as merCount ,
+				ifnull(d.count,0) as merBuyCount
+
+	 from  sys_user   su
+	left join (
+
+
+
+		select
+		count( DISTINCT record.visit_no ) count,
+		record.staff_no as staff_no
+
+		from t_pub_visit_record   record
+		where   record.cust_type=1006002
+		GROUP BY staff_no
+
+	) a on  su.user_id=a.staff_no
+	left join (
+
+	select
+	            torder.update_date as update_date,
+				dis.staff_no as staff_no,
+				SUM(torder.total_amt) as count
+	from t_pub_distributor_info   dis
+	left join t_bus_order torder on torder.buy_person=dis.distributor_no and (torder.trans_status=10024005 or torder.trans_status=10024008)
+
+
+	) b  on  su.user_id=b.staff_no
+	left join (
+
+
+
+		select
+		count( DISTINCT record.visit_no ) count,
+		record.staff_no as staff_no
+
+		from t_pub_visit_record   record
+		where   record.cust_type=1006001
+		GROUP BY staff_no
+
+
+) c on su.user_id=c.staff_no
+left join (
+
+	select mer.staff_no  as staff_no,
+				SUM(torder.total_amt) as count
+	from t_pub_mer_info   mer
+	left join t_bus_order torder on torder.buy_person=mer.mer_no and  torder.trans_status=10024005
+
+
+
+
+) d on su.user_id=b.staff_no
+
+<where>
+    <if test="dateType == 'day' ">
+        and   date_format(b.update_date,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+    </if>
+    <if test="dateType == 'month' ">
+        and   date_format(b.update_date,'%Y-%m')=date_format(#{date},'%Y-%m')
+
+    </if>
+    <if test="dateType == 'year' ">
+        and  date_format(b.update_date,'%Y')=date_format(#{date},'%Y')
+    </if>
+    <!--<if test="dateType == 'day' ">
+
+        and date_format(b.update_date,'%Y-%m-%d')  &gt;=    date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 day ),'%Y-%m-%d')
+        and date_format(torder.update_date,'%Y-%m-%d') &lt;= date_format(#{date},'%Y-%m-%d')
+
+    </if>
+    <if test="dateType == 'month' ">
+
+        and date_format(b.update_date,'%Y-%m')  &gt;=   date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 month ),'%Y-%m')
+        and   date_format(b.update_date,'%Y-%m') &lt;= date_format(#{date},'%Y-%m')
+
+    </if>
+    <if test="dateType == 'year' ">
+
+        and date_format(b.update_date,'%Y')  &gt;= date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 year ),'%Y')
+        and  date_format(b.update_date,'%Y') &lt;= date_format(#{date},'%Y')
+
+    </if>-->
+</where>
+
+
+
+
+  </select>
+
+    <select id="saleUser" resultType="java.util.Map">
+        select  su.USER_NAME,
+        ifnull(a.count,0) as disCount ,
+        ifnull(b.count,0) as merCount
+
+        from  sys_user   su
+        left join (
+            select
+            count( DISTINCT record.visit_no ) count,
+            record.staff_no as staff_no
+
+            from t_pub_visit_record   record
+            where   record.cust_type=1006002
+            GROUP BY staff_no
+
+        ) a on  su.user_id=a.staff_no
+        left join (
+            select
+            count( DISTINCT record.visit_no ) count,
+            record.staff_no as staff_no,
+            record.buy_type as buy_type
+            from t_pub_visit_record   record
+            where   record.cust_type=1006001
+            GROUP BY staff_no
+
+
+        ) b  on  su.user_id=b.staff_no
+        <where>
+
+            <if test="dateType == 'day' ">
+                and   date_format(b.buy_type,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+            </if>
+            <if test="dateType == 'month' ">
+                and   date_format(b.buy_type,'%Y-%m')=date_format(#{date},'%Y-%m')
+
+            </if>
+            <if test="dateType == 'year' ">
+                and  date_format(b.buy_type,'%Y')=date_format(#{date},'%Y')
+            </if>
+            <!--<if test="dateType == 'day' ">
+
+                and date_format(b.buy_type,'%Y-%m-%d')  &gt;=    date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 day ),'%Y-%m-%d')
+                and date_format(b.buy_type,'%Y-%m-%d') &lt;= date_format(#{date},'%Y-%m-%d')
+
+            </if>
+            <if test="dateType == 'month' ">
+
+                and date_format(b.buy_type,'%Y-%m')  &gt;=   date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 month ),'%Y-%m')
+                and   date_format(b.buy_type,'%Y-%m') &lt;= date_format(#{date},'%Y-%m')
+
+            </if>
+            <if test="dateType == 'year' ">
+
+                and date_format(b.buy_type,'%Y')  &gt;= date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 year ),'%Y')
+                and  date_format(b.buy_type,'%Y') &lt;= date_format(#{date},'%Y')
+
+            </if>-->
+
+        </where>
+
+
+
+
+    </select>
+    <select id="consume" resultType="java.util.Map">
+        select  su.USER_NAME,
+        ifnull(c.count,0) as disBuyCount ,
+        ifnull(d.count,0) as merBuyCount
+
+        from  sys_user   su
+        left join (
+            select
+            torder.update_date as update_date,
+            dis.staff_no as staff_no,
+            SUM(torder.total_amt) as count
+            from t_pub_distributor_info   dis
+            left join t_bus_order torder on torder.buy_person=dis.distributor_no and (torder.trans_status=10024005 or torder.trans_status=10024008)
+        ) c on su.user_id=c.staff_no
+            left join (
+
+            select mer.staff_no  as staff_no,
+            SUM(torder.total_amt) as count
+            from t_pub_mer_info   mer
+            left join t_bus_order torder on torder.buy_person=mer.mer_no and  torder.trans_status=10024005
+        ) d on su.user_id=d.staff_no
+
+        <where>
+            <if test="dateType == 'day' ">
+                and   date_format(c.update_date,'%Y-%m-%d')=date_format(#{date},'%Y-%m-%d')
+            </if>
+            <if test="dateType == 'month' ">
+                and   date_format(c.update_date,'%Y-%m')=date_format(#{date},'%Y-%m')
+
+            </if>
+            <if test="dateType == 'year' ">
+                and  date_format(c.update_date,'%Y')=date_format(#{date},'%Y')
+            </if>
+            <!--<if test="dateType == 'day' ">
+
+                and date_format(c.update_date,'%Y-%m-%d')  &gt;=    date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 day ),'%Y-%m-%d')
+                and date_format(c.update_date,'%Y-%m-%d') &lt;= date_format(#{date},'%Y-%m-%d')
+
+            </if>
+            <if test="dateType == 'month' ">
+
+                and date_format(c.update_date,'%Y-%m')  &gt;=   date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 month ),'%Y-%m')
+                and   date_format(c.update_date,'%Y-%m') &lt;= date_format(#{date},'%Y-%m')
+
+            </if>
+            <if test="dateType == 'year' ">
+
+                and date_format(c.update_date,'%Y')  &gt;= date_format(date_sub(str_to_date(#{date},'%Y-%m-%d'), interval 6 year ),'%Y')
+                and  date_format(c.update_date,'%Y') &lt;= date_format(#{date},'%Y')
+
+            </if>-->
+        </where>
+
+
+
+
+    </select>
+
+
+
+
+</mapper>

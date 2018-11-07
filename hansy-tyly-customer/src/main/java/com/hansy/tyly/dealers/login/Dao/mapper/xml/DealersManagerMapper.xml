@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.login.Dao.mapper.DealersManagerMapper">
+	<select id="getSaleInfo" resultType="java.util.Map">
+		select ifnull(sum(IF( trans_status='10024004',1,0)),0) buyBack,
+		ifnull(sum(IF(trans_status='10024002',1,0)),0)   buySend,
+		ifnull(sum(IF(trans_status='10024001',1,0)),0)  buyPay
+		from t_bus_order where sell_person =#{distributorNo}
+         and order_type='10022006'
+        
+	</select>
+	<select id="getBuyInfo" resultType="java.util.Map">
+		select ifnull(sum(IF( trans_status='10024001',1,0)),0) buyBack,
+		ifnull(sum(IF(trans_status='10024002',1,0)),0)   buySend,
+		ifnull(sum(IF(trans_status='10024003',1,0)),0)  buyPay
+		from t_bus_order where buy_person =#{distributorNo}
+	</select>
+	<select id="getuserNameAndAddr" resultType="java.util.Map">
+		SELECT user_name FROM(
+		SELECT distributor_name user_name
+		FROM
+		t_pub_distributor_info
+		WHERE
+		distributor_no = #{distributorNo}
+		UNION ALL
+		SELECT mer_name user_name
+		FROM
+		t_pub_mer_info
+		WHERE
+		mer_no = #{distributorNo}
+		)A		
+	</select>
+	<select id="getuserNameAndAddres" resultType="java.util.Map">
+		SELECT
+		rec_addr
+		FROM
+		t_user_rec_addr
+		WHERE
+		user_no = #{distributorNo} and is_default='1' and status ='1'
+
+	</select>
+	<select id="getUserImg" resultType="java.util.Map">
+		select mer_url from t_pub_mer_info where mer_no=#{distributorNo}
+	</select>
+	
+	<select id="getYuJinXinXi" resultType="java.util.Map">
+		SELECT
+		count(base.goods_no) count
+		from t_goods_base_info base
+		inner join t_goods_distributor dis on base.goods_no=dis.goods_no
+	    and base.goods_status=10022009
+		and dis.distributor_no=#{distributorNo}
+		and dis.goods_stock &lt;= dis.goods_stock_threshold
+
+	</select>
+	<select id="getConsumption" resultType="java.util.Map">
+		SELECT sum(total_amt) amt from t_bus_order where 1 =1
+		<if test="bigindate != null">
+			and update_date &gt;=#{bigindate}
+		</if>
+		<if test="enddate != null ">
+			and update_date &lt;=#{enddate}
+		</if>
+		and buy_person=#{merNo} and trans_status='10024005'
+	</select>
+	<select id="getConsumptionList" resultType="java.util.Map">
+		select b.distributor_name userName,a.update_date,total_amt from t_bus_order a 
+		LEFT JOIN t_pub_distributor_info b on a.sell_person = b.distributor_no where
+		buy_person=#{merId} and trans_status='10024005' 
+		<if test="bigindate != null">
+			and a.update_date &gt;=#{bigindate}
+		</if>
+		<if test="enddate != null ">
+			and a.update_date &lt;=#{enddate}
+		</if>
+		order by a.update_date
+		desc
+	</select>
+	<select id="getBuyInfoinfo" resultType="java.util.Map">
+	   select ifnull(sum(IF( trans_status='10024001',1,0)),0) buypay,
+		     ifnull(sum(IF(trans_status='10024002',1,0)),0)   buySend,
+		    ifnull(sum(IF(trans_status='10024003',1,0)),0)  buyget
+		from t_bus_order where buy_person =#{distributorNo} and order_type='10022006'
+	</select>
+     	<select id="getNews" resultType="java.util.Map">
+	   select count(table_key)count from t_user_news where is_read ='0' and user_no=#{distributorNo}
+	</select>
+	
+</mapper>

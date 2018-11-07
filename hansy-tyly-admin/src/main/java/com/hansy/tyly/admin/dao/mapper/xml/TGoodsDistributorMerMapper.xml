@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TGoodsDistributorMerMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TGoodsDistributorMer">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="INTEGER" property="tableKey" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="mer_no" jdbcType="VARCHAR" property="merNo" />
+    <result column="goods_amt" jdbcType="DECIMAL" property="goodsAmt" />
+    <result column="on_date" jdbcType="TIMESTAMP" property="onDate" />
+    <result column="down_date" jdbcType="TIMESTAMP" property="downDate" />
+    <result column="on_status" jdbcType="VARCHAR" property="onStatus" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    table_key, goods_no, distributor_no, mer_no, goods_amt, on_date, down_date, on_status, 
+    create_date
+  </sql>
+</mapper>

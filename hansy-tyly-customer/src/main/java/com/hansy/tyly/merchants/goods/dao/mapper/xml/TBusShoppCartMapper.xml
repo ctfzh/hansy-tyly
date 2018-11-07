@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.merchants.goods.dao.mapper.TBusShoppCartMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.merchants.goods.dao.model.TBusShoppCart">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="INTEGER" property="tableKey" />
+    <result column="cust_no" jdbcType="VARCHAR" property="custNo" />
+    <result column="cust_name" jdbcType="VARCHAR" property="custName" />
+    <result column="cust_type" jdbcType="VARCHAR" property="custType" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="buy_type" jdbcType="VARCHAR" property="buyType" />
+    <result column="buy_num" jdbcType="INTEGER" property="buyNum" />
+    <result column="goods_price" jdbcType="DECIMAL" property="goodsPrice" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    cart.table_key as table_key, cart.cust_no as cust_no, cart.cust_name as cust_name, 
+    cart.cust_type as cust_type, cart.goods_no as goods_no, cart.goods_name as goods_name, 
+    cart.buy_type as buy_type, cart.buy_num as buy_num, cart.goods_price as goods_price, 
+    cart.insert_date as insert_date, cart.update_date as update_date
+  </sql>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.dealers.goods.dao.mapper.TGoodsDistributorMerMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.dealers.goods.dao.model.TGoodsDistributorMer">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="INTEGER" property="tableKey" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="mer_no" jdbcType="VARCHAR" property="merNo" />
+    <result column="goods_amt" jdbcType="DECIMAL" property="goodsAmt" />
+    <result column="on_date" jdbcType="TIMESTAMP" property="onDate" />
+    <result column="own_date" jdbcType="TIMESTAMP" property="downDate" />
+    <result column="on_status" jdbcType="VARCHAR" property="onStatus" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    disMer.table_key as disMer_table_key, disMer.goods_no as disMer_goods_no, disMer.distributor_no as disMer_distributor_no, 
+    disMer.mer_no as disMer_mer_no, disMer.goods_amt as disMer_goods_amt, disMer.on_date as disMer_on_date, 
+    disMer.down_date as disMer_down_date, disMer.on_status as disMer_on_status, disMer.create_date as disMer_create_date
+  </sql>
+  <update id="updatePriceByDisNo">
+    UPDATE  t_goods_distributor_mer  SET goods_amt=#{price}
+    where distributor_no=#{disNo}
+    and goods_no=#{goodsNo}
+  </update>
+
+  <select id="getGoodsDM" resultType="java.util.Map">
+    select merInfo.mer_no as merNo, merInfo.mer_name as merName,disMer.goods_amt as goodsAmt,
+            disMer.table_key as  tableKey ,disMer.on_date as onDate,disMer.create_date as createDate
+
+    FROM  t_goods_distributor_mer disMer
+    LEFT join t_pub_mer_info   merInfo on disMer.mer_no =merInfo.mer_no
+    where  disMer.distributor_no =#{disNo}
+    and disMer.on_status =#{onStatus} and disMer.goods_no=#{goodsNo}
+  </select>
+
+  <select id="getNotGoodsDM" resultType="java.util.Map">
+  SELECT
+	mer.mer_name merName,
+	mer.mer_no merNo
+  FROM
+	(
+	SELECT
+		*
+	FROM
+		t_pub_distributor_mer
+	WHERE
+		distributor_no =#{disNo}) disMer
+		LEFT JOIN t_pub_mer_info mer ON disMer.mer_no = mer.mer_no
+		LEFT JOIN (
+		SELECT
+			*
+		FROM
+			t_goods_distributor_mer
+		WHERE
+			goods_no = #{goodsNo}  and distributor_no=#{disNo} and on_status =#{onStatus} )  gdm on  disMer.mer_no = gdm.mer_no
+
+	WHERE
+	gdm.mer_no IS NULL and mer.mer_no IS not NULL
+
+
+
+  </select>
+
+
+
+</mapper>

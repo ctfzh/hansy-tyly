@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.bill.mapper.TBusiBillHisMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiBillHis">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="BILL_ID" jdbcType="VARCHAR" property="billId" />
+    <result column="ORG_ID" jdbcType="VARCHAR" property="orgId" />
+    <result column="CUST_ID" jdbcType="VARCHAR" property="custId" />
+    <result column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="BILL_TYPE" jdbcType="VARCHAR" property="billType" />
+    <result column="BUSI_DATE" jdbcType="VARCHAR" property="busiDate" />
+    <result column="DCS_RST" jdbcType="VARCHAR" property="dcsRst" />
+    <result column="DC_TYPE" jdbcType="VARCHAR" property="dcType" />
+    <result column="BILL_AMT" jdbcType="DECIMAL" property="billAmt" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    BILL_ID, ORG_ID, CUST_ID, PROD_ID, BILL_TYPE, BUSI_DATE, DCS_RST, DC_TYPE, BILL_AMT, 
+    `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+</mapper>

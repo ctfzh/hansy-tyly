@@ -1,0 +1,1 @@
+java -jar lemoncome-watchdog-admin.jar --spring.profiles.active=prod

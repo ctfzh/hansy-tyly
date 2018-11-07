@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.sale.dao.mapper.VisitFilesMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.sale.dao.model.VisitFiles">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="file_no" jdbcType="VARCHAR" property="fileNo" />
+    <result column="visit_no" jdbcType="VARCHAR" property="visitNo" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_status" jdbcType="VARCHAR" property="fileStatus" />
+    <result column="upload_date" jdbcType="TIMESTAMP" property="uploadDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    file_no, visit_no, file_path, file_name, file_status, upload_date, update_date
+  </sql>
+    <insert id="insertBacth">
+      INSERT INTO t_pub_visit_files(file_no, visit_no, file_path, file_name, file_status, upload_date, update_date) VALUES
+      <foreach collection="visitFiles" item="item" separator="," index="index">
+        (#{item.fileNo}, #{item.visitNo}, #{item.filePath}, #{item.fileName}, #{item.fileStatus}, #{item.uploadDate}, #{item.updateDate})
+      </foreach>
+    </insert>
+</mapper>

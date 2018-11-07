@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TBusOrderChangeMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusOrderChange">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="VARCHAR" property="tableKey" />
+    <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="change_status" jdbcType="VARCHAR" property="changeStatus" />
+    <result column="change_desc" jdbcType="VARCHAR" property="changeDesc" />
+    <result column="change_date" jdbcType="TIMESTAMP" property="changeDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    table_key, order_no, change_status, change_desc, change_date
+  </sql>
+
+</mapper>

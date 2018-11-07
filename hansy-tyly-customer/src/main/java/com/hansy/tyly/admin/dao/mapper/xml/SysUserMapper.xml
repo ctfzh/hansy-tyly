@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.SysUserMapper">
+	<resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.SysUser">
+		<!-- WARNING - @mbg.generated -->
+		<id column="USER_ID" jdbcType="VARCHAR" property="userId" />
+		<result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
+		<result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+		<result column="USER_PWD" jdbcType="VARCHAR" property="userPwd" />
+		<result column="USER_TYPE" jdbcType="VARCHAR" property="userType" />
+		<result column="USER_TEL" jdbcType="VARCHAR" property="userTel" />
+		<result column="USER_DEPT" jdbcType="VARCHAR" property="userDept" />
+		<result column="STATUS" jdbcType="VARCHAR" property="status" />
+		<result column="INSERT_TIME" jdbcType="DATE" property="insertTime" />
+		<result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+		<result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+		<result column="SEX" jdbcType="VARCHAR" property="sex" />
+    	<result column="ENTRY_TIME" jdbcType="DATE" property="entryTime" />
+    	<result column="USER_ID_CARD" jdbcType="VARCHAR" property="userIdCard" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		<!-- WARNING - @mbg.generated -->
+		USER_ID, LOGIN_ID, USER_NAME, USER_PWD, USER_TYPE, USER_TEL,
+		USER_DEPT, `STATUS`,
+		INSERT_TIME, INSERT_USER_ID, UPDATE_TIME,SEX,ENTRY_TIME,USER_ID_CARD
+	</sql>
+</mapper>

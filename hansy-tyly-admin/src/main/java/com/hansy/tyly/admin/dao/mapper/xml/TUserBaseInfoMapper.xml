@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TUserBaseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TUserBaseInfo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="user_no" jdbcType="VARCHAR" property="userNo" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="log_passwd" jdbcType="VARCHAR" property="logPasswd" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="relation_no" jdbcType="VARCHAR" property="relationNo" />
+    <result column="user_status" jdbcType="VARCHAR" property="userStatus" />
+    <result column="wx_no" jdbcType="VARCHAR" property="wxNo" />
+    <result column="reg_date" jdbcType="TIMESTAMP" property="regDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    user_no, user_name, log_passwd, user_phone, user_type, relation_no, user_status, 
+    wx_no, reg_date
+  </sql>
+  <update id="updateStatusByUserNo">
+    UPDATE t_user_base_info SET user_status = #{userStatus}
+    WHERE user_no = #{userNo}
+  </update>
+
+</mapper>

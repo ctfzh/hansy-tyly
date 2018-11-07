@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.prod.mapper.TBusiIndicatorMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiIndicator">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="INDICATOR_ID" jdbcType="VARCHAR" property="indicatorId" />
+    <result column="INDICATOR_NAME" jdbcType="VARCHAR" property="indicatorName" />
+    <result column="INDICATOR_TYPE" jdbcType="VARCHAR" property="indicatorType" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="PARENT_INDT_ID" jdbcType="VARCHAR" property="parentIndcId" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    INDICATOR_ID, INDICATOR_NAME, INDICATOR_TYPE, `STATUS`, PARENT_INDT_ID, INSERT_TIME, 
+    INSERT_USER_ID, UPDATE_TIME
+  </sql>
+</mapper>

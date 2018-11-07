@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper">
+
+ <insert id="savebatch" parameterType="java.util.List">
+		insert into T_SC_CUST_INDC_RST
+		(
+		   SYS_UUID,
+		   BILL_ID,
+		   INDC_ID,
+		   INDC_VALUE,
+		   INSERT_TIME,
+		   INSERT_USER_ID
+		)
+		values
+		 <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.sysUuid}, #{item.billId},#{item.indcId},
+            #{item.indcValue},#{item.insertTime},#{item.insertUserId})
+        </foreach>
+	</insert>
+	
+<update id="updatebatchStats"  parameterType="java.util.List">    
+        update T_SC_CUST_BILL   set     
+            SCHEDULE_STATUS='10016003'    
+        where BILL_ID in     
+    <foreach collection="list" item="item" index="index" open="(" separator="," close=")">  
+        #{item}  
+    </foreach> 
+</update>   
+
+	<select id="testOne" resultType="java.lang.String">
+		select 1 FROM  dual
+	</select>
+	<select id="queryCustBill" resultType="com.lemoncome.watchdog.tempindicators.model.CustBillModel">
+		select BILL_ID as billId,PROD_ID as prodId FROM  t_sc_cust_bill where SCHEDULE_STATUS = '10016002'
+	</select>
+	<select id="queryALLTempindicators" parameterType="List" resultType="com.lemoncome.watchdog.tempindicators.model.CustTempindicatorsModel">
+		SELECT DISTINCT b.PARENT_INDC_ID ,a.PROD_ID from t_r_prod_indc a 
+        LEFT JOIN  t_busi_indicator b on a.INDC_ID = b.INDICATOR_ID WHERE a.PROD_ID in (
+                <foreach collection="prodIdList" item="prodId" open="" close="" separator=",">
+            	#{prodId}
+        		</foreach>
+        		)
+	</select>
+	<delete id="deleteIndicators">
+	delete from T_SC_CUST_INDC_RST
+	</delete>
+
+</mapper>

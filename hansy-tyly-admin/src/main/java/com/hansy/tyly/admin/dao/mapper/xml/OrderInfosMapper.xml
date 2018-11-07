@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.OrderInfosMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.OrderInfos">
+        <association property="order" resultMap="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.BaseResultMap"/>
+        <collection property="orderDetailList" resultMap="com.hansy.tyly.admin.dao.mapper.TBusOrderDetailMapper.BaseResultMap"/>
+        <collection property="goodsBaseInfoList" resultMap="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+    </resultMap>
+
+    <resultMap id="BaseRefundListMap" type="com.hansy.tyly.admin.dao.model.OrderInfos">
+        <association property="order" resultMap="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.BaseResultMap"/>
+        <association property="refund" resultMap="com.hansy.tyly.admin.dao.mapper.TBusRefundMapper.BaseResultMap"/>
+    </resultMap>
+
+    <resultMap id="BaseRefundInfoMap" type="com.hansy.tyly.admin.dao.model.OrderInfos">
+        <association property="order" resultMap="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.BaseResultMap"/>
+        <association property="refund" resultMap="com.hansy.tyly.admin.dao.mapper.TBusRefundMapper.BaseResultMap"/>
+        <collection property="orderDetailList" resultMap="com.hansy.tyly.admin.dao.mapper.TBusOrderDetailMapper.BaseResultMap"/>
+        <collection property="goodsBaseInfoList" resultMap="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="getOrdersListByParams"  resultMap="BaseResultMap">
+        SELECT
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.Base_Column_List"/>
+        from t_bus_order bo
+        <if test="disOrder!=null">
+            left join t_pub_distributor_info disInfo on disInfo.distributor_no=bo.buy_person
+        </if>
+        <if test="merOrder!=null">
+            left join t_pub_distributor_info disInfo on disInfo.distributor_no=bo.sell_person
+            left join t_pub_mer_info merInfo on merInfo.mer_no=bo.buy_person
+        </if>
+       /* left join t_bus_order_change orderchange on orderchange.order_no=bo.order_no and orderchange.change_status= '10024001'  代付款状态*/
+        <where>
+
+            <if test="orderStatus!=null">
+                and bo.trans_status=#{orderStatus}
+            </if>
+            <if test="orderNo!=null">
+                and bo.order_no = #{orderNo}
+            </if>
+            <if test="buyPerson!=null">
+                and bo.buy_person=#{buyPerson}
+            </if>
+            <if test="sellPerson!=null">
+                and bo.sell_person=#{sellPerson}
+            </if>
+            <if test="disOrder!=null">
+               and bo.order_type=#{disOrder}
+            </if>
+            <if test="merOrder!=null">
+
+                and bo.order_type=#{merOrder}
+            </if>
+            <if test="disName!=null">
+                and disInfo.distributor_name like CONCAT('%',#{disName},'%')
+            </if>
+            <if test="merName!=null">
+                and
+                merInfo.mer_name like CONCAT('%',#{merName},'%')
+            </if>
+            <if test="startTime!=null">
+
+                <![CDATA[   and  str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s') <= bo.trans_date   ]]>
+
+            </if>
+            <if test="endTime!=null">
+
+                <![CDATA[   and  str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s') >= bo.trans_date   ]]>
+            </if>
+        </where>
+
+
+
+    order by bo.update_date desc
+
+    </select>
+
+
+    <select id="getOrdersDetailListByParams"  resultType="java.util.Map">
+        SELECT
+        bod.goods_num goodsNum,bod.goods_no  goodsNo,bod.goods_amt goodsAmt,
+        base.goods_sale_num goodsSaleNum, base.goods_name goodsName,
+        bod.goods_num- IFNULL(refund.goods_num,0) nowGoodsNum,
+        file.file_path filePath
+        from   t_bus_order_detail bod
+        left join t_goods_base_info base  on base.goods_no=bod.goods_no
+        left join t_goods_files file  on base.goods_no=file.goods_no
+        and base.mian_pic_file_no=file.file_no
+        left join t_bus_refund refund on bod.order_no=refund.order_no and bod.goods_no=refund.goods_num
+        <where>
+            <if test="orderNo!=null">
+                and bod.order_no =  #{orderNo}
+            </if>
+        </where>
+
+
+    </select>
+
+
+    <select id="getChangeDate"  resultType="java.util.Map">
+        select
+        max(if(change_status='10024001',change_date,0)) createDate,
+        max(if(change_status='10024002',change_date,0)) payDate,
+        max(if(change_status='10024003',change_date,0)) sendDate,
+        max(if(change_status='10024005',change_date,0)) compelteDate
+
+        from t_bus_order_change where order_no=#{orderNo}  group by order_no
+    </select>
+
+
+    <select id="getRefundGoodsByParams"  resultType="java.util.Map">
+        SELECT
+        ref.goods_num goodsNum,ref.goods_no  goodsNo,ref.refund_amt refundAmt,
+        ref.refund_reason refundReason,ref.refund_no refundNo,
+        base.goods_sale_num goodsSaleNum, base.goods_name goodsName,
+        file.file_path filePath
+        from   t_bus_refund ref
+        left join t_goods_base_info base  on ref.goods_no=base.goods_no
+        left join t_goods_files file  on base.goods_no=file.goods_no
+        and base.mian_pic_file_no=file.file_no
+        where ref.appr_status='10027002'
+        and ref.order_no =  #{orderNo}
+
+
+
+    </select>
+
+
+
+    <select id="getRefundListByParams"  resultMap="BaseRefundListMap">
+        SELECT
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusRefundMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.Base_Column_List"/>
+        from t_bus_refund ref
+        left join t_bus_order bo  on ref.order_no=bo.order_no
+        left join t_pub_distributor_info dis  on dis.distributor_no= bo.buy_person
+        where 1=1  /*只能查看平台*/
+        <if test="apprStatus!=null">
+            and ref.appr_status=#{apprStatus}
+        </if>
+        <if test="orderType!=null">
+            and bo.order_type=#{orderType}
+        </if>
+        <if test="tableKey!=null">
+            and ref.table_key=#{tableKey}
+        </if>
+        <if test="orderNo!=null">
+            and bo.order_no=#{orderNo}
+        </if>
+        <if test="disNo!=null">
+            and bo.buy_person=#{disNo}
+        </if>
+        <if test="disName!=null">
+            and dis.distributor_name like  CONCAT('%',#{disName},'%')
+        </if>
+
+        <if test="startTime!=null">
+
+            <![CDATA[   and  str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s') <= ref.apply_date  ]]>
+
+        </if>
+        <if test="endTime!=null">
+
+            <![CDATA[   and  str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s') >= ref.apply_date  ]]>
+        </if>
+      order by ref.apply_date desc
+
+    </select>
+    <select id="getRefundInfoByKey"  resultMap="BaseRefundInfoMap">
+        SELECT
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusRefundMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusOrderMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.admin.dao.mapper.TBusOrderDetailMapper.Base_Column_List"/>,
+        <include refid="com.hansy.tyly.admin.dao.mapper.TGoodsBaseInfoMapper.Base_Column_List"/>
+        from t_bus_refund ref
+        left join t_bus_order bo  on ref.order_no=bo.order_no
+        left join t_bus_order_detail bod  on bod.order_no=bo.order_no and bod.goods_no=ref.goods_no
+        left join t_goods_base_info base  on base.goods_no=bod.goods_no  and ref.goods_no=base.goods_no
+        where ref.refund_no=#{tableKey}
+    </select>
+
+
+
+    <select id="getUnRefundGoodsByParams"  resultType="java.util.Map">
+        SELECT
+        ref.goods_num goodsNum,ref.goods_no  goodsNo,ref.refund_amt refundAmt,
+        ref.refund_reason refundReason,ref.refund_no refundNo,
+        base.goods_sale_num goodsSaleNum, base.goods_name goodsName,
+        file.file_path filePath
+        from   t_bus_refund ref
+        left join t_goods_base_info base  on ref.goods_no=base.goods_no
+        left join t_goods_files file  on base.goods_no=file.goods_no
+        and base.mian_pic_file_no=file.file_no
+        where ref.appr_status='10027001'
+        and ref.order_no =  #{orderNo}
+    </select>
+
+
+</mapper>

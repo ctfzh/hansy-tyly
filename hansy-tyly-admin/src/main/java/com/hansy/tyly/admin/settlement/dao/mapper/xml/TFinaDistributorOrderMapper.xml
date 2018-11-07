@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.settlement.dao.mapper.TFinaDistributorOrderMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.settlement.dao.model.TFinaDistributorOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="sett_no" jdbcType="VARCHAR" property="settNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    order_no, sett_no
+  </sql>
+    <insert id="insertBatchsBySettNo">
+      INSERT INTO t_fina_distributor_order(order_no, sett_no) VALUES
+      <foreach collection="orderNos" index="index" item="orderNo" separator="," >
+        (#{orderNo}, #{settNo})
+      </foreach>
+    </insert>
+  <insert id="insertBatchs">
+      INSERT INTO t_fina_distributor_order(order_no, sett_no) VALUES
+    <foreach collection="distributorOrders" index="index" item="o" separator=",">
+      (#{o.orderNo}, #{o.settNo})
+    </foreach>
+  </insert>
+  <select id="listSettlementOrder" resultType="com.hansy.tyly.admin.dao.model.TBusOrder">
+    SELECT bo.*,di.distributor_name distributorName
+    FROM t_bus_order bo
+    INNER JOIN t_fina_distributor_order do ON do.order_no = bo.order_no AND do.sett_no = #{settNo}
+    INNER JOIN t_pub_distributor_info di ON di.distributor_no = bo.buy_person
+    ORDER BY bo.trans_date DESC
+  </select>
+</mapper>

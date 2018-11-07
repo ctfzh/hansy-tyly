@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TReportTableConfDtlMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TReportTableConfDtl">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="DETAIL_KEY" jdbcType="VARCHAR" property="detailKey" />
+    <result column="REPORT_KEY" jdbcType="VARCHAR" property="reportKey" />
+    <result column="COLUMN_NAME" jdbcType="VARCHAR" property="columnName" />
+    <result column="COLUMN_CODE" jdbcType="VARCHAR" property="columnCode" />
+    <result column="COLUMN_DISPLAY" jdbcType="VARCHAR" property="columnDisplay" />
+    <result column="COLUMN_DROPDOWN" jdbcType="VARCHAR" property="columnDropdown" />
+    <result column="IS_SHOW" jdbcType="VARCHAR" property="isShow" />
+    <result column="IS_NEED" jdbcType="VARCHAR" property="isNeed" />
+    <result column="IS_QUERYCONDITION" jdbcType="VARCHAR" property="isQuerycondition" />
+    <result column="COND_TYPE" jdbcType="VARCHAR" property="condType" />
+    <result column="COND_EXPRESSION" jdbcType="VARCHAR" property="condExpression" />
+    <result column="COND_WHERE" jdbcType="VARCHAR" property="condWhere" />
+    <result column="COND_MUST" jdbcType="VARCHAR" property="condMust" />
+    <result column="COND_EXPRESSION_RIGHT" jdbcType="VARCHAR" property="condExpressionRight" />
+    <result column="RECORD_TYPE" jdbcType="VARCHAR" property="recordType" />
+    <result column="DEFAULT_VALUE" jdbcType="VARCHAR" property="defaultValue" />
+  </resultMap>
+
+  <delete id="deleteColmn">
+    delete from t_report_table_conf_dtl where DETAIL_KEY=#{detailKey}
+  </delete>
+  <select id="selectCloum" resultMap="BaseResultMap">
+   select * from t_report_table_conf_dtl where REPORT_KEY=#{reportKey} order by sort desc
+  </select>
+  <select id="getUseClom" resultMap="BaseResultMap">
+  select  * from t_report_table_conf_dtl where REPORT_KEY=#{reportKey} and IS_QUERYCONDITION='9000000001'
+  </select>
+   <select id="selectCloumcount" resultMap="BaseResultMap">
+  select  * from t_report_table_conf_dtl where REPORT_KEY=#{reportKey} and IS_SHOW='6000000001'
+  </select>
+ 
+  
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.merchants.goods.dao.mapper.TGoodsDistributorMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.merchants.goods.dao.model.TGoodsDistributor">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="table_key" jdbcType="INTEGER" property="tableKey" />
+    <result column="goods_no" jdbcType="VARCHAR" property="goodsNo" />
+    <result column="distributor_no" jdbcType="VARCHAR" property="distributorNo" />
+    <result column="goods_stock" jdbcType="INTEGER" property="goodsStock" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    dis.table_key as table_key, dis.goods_no as goods_no, dis.distributor_no as distributor_no, 
+    dis.goods_stock as goods_stock
+  </sql>
+</mapper>

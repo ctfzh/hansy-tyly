@@ -1,0 +1,50 @@
+2018-07-20 15:16:38.888  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : Starting Startup on qiubin with PID 6284 (D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch\target\classes started by z in D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch)
+2018-07-20 15:16:38.897 DEBUG 6284 --- [main] com.lemoncome.watchdog.Startup           : Running with Spring Boot v1.5.7.RELEASE, Spring v4.3.11.RELEASE
+2018-07-20 15:16:38.897  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : The following profiles are active: dev
+2018-07-20 15:16:39.033  INFO 6284 --- [main] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@1a451d4d: startup date [Fri Jul 20 15:16:39 CST 2018]; root of context hierarchy
+2018-07-20 15:16:40.218 DEBUG 6284 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : Searching for mappers annotated with @Mapper
+2018-07-20 15:16:40.224 DEBUG 6284 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : Using auto-configuration base package 'com.lemoncome.watchdog'
+2018-07-20 15:16:40.274  WARN 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.lemoncome.watchdog]' package. Please check your configuration.
+2018-07-20 15:16:40.532 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch\target\classes\com\lemoncome\watchdog\riskbatch\mapper\BigDataSubmitMapper.class]
+2018-07-20 15:16:40.533 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Identified candidate component class: file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch\target\classes\com\lemoncome\watchdog\tempindicators\mapper\TempindicatorsMapper.class]
+2018-07-20 15:16:40.534 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper' and 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper' mapperInterface
+2018-07-20 15:16:40.534 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'com.lemoncome.watchdog.riskbatch.mapper.BigDataSubmitMapper'.
+2018-07-20 15:16:40.535 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Creating MapperFactoryBean with name 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper' and 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper' mapperInterface
+2018-07-20 15:16:40.535 DEBUG 6284 --- [main] o.m.s.mapper.ClassPathMapperScanner      : Enabling autowire by type for MapperFactoryBean with name 'com.lemoncome.watchdog.tempindicators.mapper.TempindicatorsMapper'.
+2018-07-20 15:16:40.545  WARN 6284 --- [main] o.s.c.a.ConfigurationClassPostProcessor  : Cannot enhance @Configuration bean definition 'mybatisConfiguration' since its singleton instance has been created too early. The typical cause is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor return type: Consider declaring such methods as 'static'.
+2018-07-20 15:16:41.952 DEBUG 6284 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Scanned package: 'com.lemoncome.watchdog.**.model' for aliases
+2018-07-20 15:16:42.309 DEBUG 6284 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Parsed mapper file: 'file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch\target\classes\com\lemoncome\watchdog\riskbatch\mapper\xml\BigDataSubmitMapper.xml]'
+2018-07-20 15:16:42.383 DEBUG 6284 --- [main] o.mybatis.spring.SqlSessionFactoryBean   : Parsed mapper file: 'file [D:\test\JAVA\tyly\java\0401sourcecode\lemoncome-watchdog\lemoncome-watchdog-procbatch\target\classes\com\lemoncome\watchdog\tempindicators\mapper\xml\TempindicatorsMapper.xml]'
+2018-07-20 15:16:42.646  INFO 6284 --- [main] c.l.w.core.holder.SpringContextHolder    : # SpringContextHolder 设定成功
+2018-07-20 15:16:42.749 DEBUG 6284 --- [main] o.m.s.b.a.MybatisAutoConfiguration       : No org.mybatis.spring.mapper.MapperFactoryBean found.
+2018-07-20 15:16:43.804  INFO 6284 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-07-20 15:16:43.807  INFO 6284 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Bean with name 'dataSource' has been autodetected for JMX exposure
+2018-07-20 15:16:43.821  INFO 6284 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Located MBean 'dataSource': registering with JMX server as MBean [com.alibaba.druid.pool:name=dataSource,type=DruidDataSource]
+2018-07-20 15:16:43.987  INFO 6284 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2018-07-20 15:16:45.081  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : # ————————————————————————————————————————————————— 
+2018-07-20 15:16:45.082  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : # 看家狗跑批系统(Watchdog Procbatch V1.0.0) 启动
+2018-07-20 15:16:45.083  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : # 系统运行环境：dev
+2018-07-20 15:16:45.084  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : # 系统临时目录：C:\Users\z\AppData\Local\Temp\
+2018-07-20 15:16:45.084  INFO 6284 --- [main] com.lemoncome.watchdog.Startup           : # ————————————————————————————————————————————————— 
+2018-07-20 15:16:45.103  INFO 6284 --- [main] utoConfigurationReportLoggingInitializer : 
+
+Error starting ApplicationContext. To display the auto-configuration report re-run your application with 'debug' enabled.
+2018-07-20 15:16:45.129 ERROR 6284 --- [main] o.s.boot.SpringApplication               : Application startup failed
+
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:735) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:716) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at org.springframework.boot.SpringApplication.afterRefresh(SpringApplication.java:703) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:304) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1118) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1107) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	at com.lemoncome.watchdog.Startup.main(Startup.java:41) [classes/:na]
+Caused by: com.lemoncome.watchdog.core.excepiton.ServiceException: 请提供服务名称[--service.name=?]
+	at com.lemoncome.watchdog.Startup.lambda$1(Startup.java:64) [classes/:na]
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:732) [spring-boot-1.5.7.RELEASE.jar:1.5.7.RELEASE]
+	... 6 common frames omitted
+
+2018-07-20 15:16:45.132  INFO 6284 --- [main] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@1a451d4d: startup date [Fri Jul 20 15:16:39 CST 2018]; root of context hierarchy
+2018-07-20 15:16:45.137  INFO 6284 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2018-07-20 15:16:45.148  INFO 6284 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+2018-07-20 15:16:45.151  INFO 6284 --- [main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} closed

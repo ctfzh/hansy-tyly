@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.dao.mapper.TGoodsTypeMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TGoodsType">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="type_no" jdbcType="VARCHAR" property="typeNo" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="type_desc" jdbcType="VARCHAR" property="typeDesc" />
+    <result column="type_status" jdbcType="VARCHAR" property="typeStatus" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    goodsType.type_no as type_no, goodsType.type_name as type_name, 
+    goodsType.type_desc as type_desc, goodsType.type_status as type_status, 
+    goodsType.insert_date as insert_date, goodsType.update_date as update_date
+  </sql>
+
+  <select id="selectByParams" resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List"/>
+    from t_goods_type goodsType
+    <where>
+      <if test="typeName!=null">
+       and goodsType.type_name like CONCAT('%',#{typeName},'%')
+      </if>
+      <if test="typeNo!=null">
+        and goodsType.type_no like CONCAT('%',#{typeNo},'%')
+      </if>
+      <if test="typeStatus!=null">
+        and goodsType.type_status=#{typeStatus}
+      </if>
+    </where>
+
+  </select>
+ 
+</mapper>

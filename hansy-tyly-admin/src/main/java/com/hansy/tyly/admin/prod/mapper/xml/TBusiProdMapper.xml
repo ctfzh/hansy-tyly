@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hansy.tyly.admin.prod.mapper.TBusiProdMapper">
+  <resultMap id="BaseResultMap" type="com.hansy.tyly.admin.dao.model.TBusiProd">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="PROD_ID" jdbcType="VARCHAR" property="prodId" />
+    <result column="PROD_NAME" jdbcType="VARCHAR" property="prodName" />
+    <result column="PROD_TYPE" jdbcType="VARCHAR" property="prodType" />
+    <result column="PROD_REMARK" jdbcType="VARCHAR" property="prodRemark" />
+    <result column="COST_TYPE" jdbcType="VARCHAR" property="costType" />
+    <result column="COST_AMT" jdbcType="DECIMAL" property="costAmt" />
+    <result column="MNG_TYPE" jdbcType="VARCHAR" property="mngType" />
+    <result column="RULE_ID" jdbcType="VARCHAR" property="ruleId" />
+    <result column="INTER_ADDR1" jdbcType="VARCHAR" property="interAddr1" />
+    <result column="INTER_ADDR2" jdbcType="VARCHAR" property="interAddr2" />
+    <result column="INTER_ADDR3" jdbcType="VARCHAR" property="interAddr3" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="INSERT_TIME" jdbcType="TIMESTAMP" property="insertTime" />
+    <result column="INSERT_USER_ID" jdbcType="VARCHAR" property="insertUserId" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    PROD_ID, PROD_NAME, PROD_TYPE, PROD_REMARK, COST_TYPE, COST_AMT, MNG_TYPE, RULE_ID, 
+    INTER_ADDR1, INTER_ADDR2, INTER_ADDR3, `STATUS`, INSERT_TIME, INSERT_USER_ID, UPDATE_TIME
+  </sql>
+  <select id="getList" resultType="java.util.Map">
+      SELECT
+      a.*, b.PROD_LIB_FILE,
+      b.PROD_LIB_PATH,
+      c.USER_NAME
+      FROM
+      t_busi_prod a
+      LEFT JOIN t_busi_prod_lib b ON a.PROD_ID = b.PROD_ID
+      LEFT JOIN sys_user  c on a.INSERT_USER_ID = c.USER_ID
+      where 1=1
+    <if test="prodName != null and prodName != ''">
+      AND a.PROD_NAME LIKE concat(concat('%',#{prodName}),'%')
+    </if>
+    <if test="mngType != null and mngType != ''">
+      AND a.MNG_TYPE LIKE concat(concat('%',#{mngType}),'%')
+    </if>
+    <if test="status != null and status != ''">
+      AND a.status LIKE concat(concat('%',#{status}),'%')
+    </if>
+      order by a.insert_time desc
+  </select>
+  <select id="getIndicatorOnProd" resultType="java.util.Map">
+    SELECT
+        a.*,
+        b.SYS_UUID,
+        b.STATUS nstatus
+    FROM
+        t_busi_indicator a,
+        t_r_prod_indc b
+    WHERE
+        a.INDICATOR_ID = b.INDC_ID
+    AND b.PROD_ID = #{prodId}
+    <if test="status != null and status != ''">
+      and b.status=#{status}
+    </if>
+   <if test="indicName != null and indicName != ''">
+      and a.INDICATOR_NAME LIKE concat(concat('%',#{indicName}),'%')
+   </if>
+    order by b.INSERT_TIME desc
+  </select>
+  <select id="getAllIndicator" resultType="java.util.Map">
+    SELECT
+	*
+      FROM
+          t_busi_indicator
+      WHERE
+          INDICATOR_ID not in (
+              SELECT
+                  a.INDICATOR_ID
+              FROM
+                  t_busi_indicator a,
+                  t_r_prod_indc b
+              WHERE
+                  a.INDICATOR_ID = b.INDC_ID
+              AND b.PROD_ID = #{prodId}
+              and b.status=#{status}
+          ) and status=#{status}
+            and INDICATOR_TYPE=#{indicatorType}
+      <if test="indicName != null and indicName != ''">
+          and INDICATOR_NAME LIKE concat(concat('%',#{indicName}),'%')
+      </if>
+          order by INSERT_TIME desc
+  </select>
+    <select id="getAllIndicatorTree" resultType="java.util.Map">
+        SELECT INDICATOR_ID,INDICATOR_NAME,PARENT_INDC_ID FROM t_busi_indicator order by INSERT_TIME desc
+    </select>
+    <select id="getIndiList" resultType="java.util.Map">
+        SELECT
+            *,
+            b.USER_NAME
+        FROM
+            t_busi_indicator a
+        LEFT JOIN
+            sys_user b on a.INSERT_USER_ID=b.USER_ID
+        WHERE 1=1
+        <if test="indicatorName != null and indicatorName != ''">
+            AND a.INDICATOR_NAME LIKE concat(concat('%',#{indicatorName}),'%')
+        </if>
+        <if test="id != null and id != ''">
+            AND (a.PARENT_INDC_ID = #{id} or a.INDICATOR_ID = #{id})
+        </if>
+        <if test="insertTime != null and insertTime != ''">
+            AND DATE_FORMAT(a.INSERT_TIME,'%Y%m%d') = DATE_FORMAT(#{insertTime},'%Y%m%d')
+        </if>
+        ORDER BY
+            a.INSERT_TIME DESC
+    </select>
+    <select id="queryOrgNoProdList" resultType="java.util.Map">
+        SELECT
+            a.*
+        FROM
+            t_busi_prod a
+        WHERE
+            a.`STATUS` = #{status}
+        AND a.PROD_ID NOT IN (
+            SELECT
+                b.PROD_ID
+            FROM
+                t_r_org_prod b
+            WHERE
+                b.org_id = #{orgId}
+                and b.status=#{status}
+        )
+        <if test="prodName != null and prodName != ''">
+            AND a.PROD_NAME LIKE concat(concat('%',#{prodName}),'%')
+        </if>
+        order by a.INSERT_TIME desc
+    </select>
+    <select id="queryOrgYesProdList" resultType="java.util.Map">
+        SELECT
+          a.*, b. STATUS ralStatus
+        FROM
+          t_busi_prod a,
+          (
+            SELECT
+              b.prod_id,
+              b. STATUS
+            FROM
+              t_r_org_prod b
+            WHERE
+              b.org_id = #{orgId}
+            GROUP BY
+              b.prod_id
+            ) b
+        WHERE
+        a.prod_id = b.prod_id
+        <if test="prodName != null and prodName != ''">
+            AND a.PROD_NAME LIKE concat(concat('%',#{prodName}),'%')
+        </if>
+                order by a.INSERT_TIME desc
+    </select>
+</mapper>
